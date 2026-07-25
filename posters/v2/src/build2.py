@@ -10,7 +10,7 @@ FOOTER = '''
       <img class="avatar" src="../../photos/avatar.jpg">
       <div>
         <div class="foot-name">山竹</div>
-        <div class="foot-role">《辩论怪物 Debate Beasts》主理人｜巴生光华独立中学辩论队教练</div>
+        <div class="foot-role">巴生光华独立中学辩论队教练｜马来西亚辩手</div>
       </div>
     </div>
     <div class="foot-cta">私信我 → <span class="ig">@zhou_shanzhu</span></div>
@@ -19,7 +19,7 @@ FOOTER = '''
 '''
 
 def meta(idx):
-    return f'''<div class="meta"><div class="brand">DEBATE BEASTS · 山竹辩论私教</div><div class="idx">{idx} / 04</div></div>'''
+    return f'''<div class="meta"><div class="brand">山竹辩论私教</div><div class="idx">{idx} / 04</div></div>'''
 
 def photo_card(idx, photo_h_story, photo_h_car, kicker, title_html, intro, list_items):
     li = "".join(
