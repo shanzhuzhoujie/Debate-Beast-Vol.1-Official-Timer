@@ -1,0 +1,402 @@
+:root{
+  --maroon:#6B1626;
+  --maroon-deep:#4E0F1B;
+  --gold:#C5A059;
+  --gold-soft:#D9BD8B;
+  --cream-1:#F7F0DF;
+  --cream-2:#F9F5F0;
+  --stripe:#EAE1D8;
+  --ink:#241A1C;
+  --ink-soft:#4a4241;
+  --white:#FDFCFB;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:1080px;height:100%;background:var(--cream-1);}
+body{
+  font-family:"Noto Sans CJK SC","Liberation Sans",sans-serif;
+  color:var(--ink);
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(1200px 900px at 85% -10%, rgba(197,160,89,0.10), transparent 60%),
+    radial-gradient(1000px 800px at -10% 110%, rgba(107,22,38,0.06), transparent 55%),
+    linear-gradient(180deg,var(--cream-2) 0%, var(--cream-1) 100%);
+}
+
+.frame{
+  position:absolute; inset:0;
+  border:2px solid rgba(197,160,89,0.55);
+  margin:28px;
+  pointer-events:none;
+}
+.frame::before,.frame::after{
+  content:"";
+  position:absolute;
+  width:26px;height:26px;
+  border:2px solid var(--gold);
+}
+.corner{position:absolute;width:34px;height:34px;pointer-events:none;}
+.corner.tl{top:28px;left:28px;border-top:3px solid var(--maroon);border-left:3px solid var(--maroon);}
+.corner.tr{top:28px;right:28px;border-top:3px solid var(--maroon);border-right:3px solid var(--maroon);}
+.corner.bl{bottom:28px;left:28px;border-bottom:3px solid var(--maroon);border-left:3px solid var(--maroon);}
+.corner.br{bottom:28px;right:28px;border-bottom:3px solid var(--maroon);border-right:3px solid var(--maroon);}
+
+.page{
+  position:relative;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  padding:0 84px;
+}
+
+/* ---- breadcrumb ---- */
+.crumb{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:56px;
+}
+.crumb .left{
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:3px;
+  color:#8a7c68;
+  text-transform:uppercase;
+}
+.crumb .left b{color:var(--maroon);font-weight:700;}
+.crumb .right{
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:2px;
+  color:var(--gold);
+}
+.hair{
+  height:1px;
+  width:100%;
+  background:linear-gradient(90deg, rgba(197,160,89,0) 0%, rgba(197,160,89,0.85) 15%, rgba(197,160,89,0.85) 85%, rgba(197,160,89,0) 100%);
+  margin-top:18px;
+}
+.hair.solid{background:rgba(197,160,89,0.55);}
+
+/* ---- header / icon / title ---- */
+.header{
+  text-align:center;
+  padding-top:34px;
+}
+.badge{
+  width:104px;height:104px;
+  border-radius:50%;
+  border:2.5px solid var(--gold);
+  background:radial-gradient(circle at 32% 28%, #ffffff 0%, var(--cream-1) 55%, var(--stripe) 100%);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto;
+  box-shadow:0 0 0 6px rgba(197,160,89,0.10);
+}
+.badge svg{width:56px;height:56px;}
+
+.kicker{
+  margin-top:22px;
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:5px;
+  color:var(--gold);
+  text-transform:uppercase;
+}
+h1.title{
+  margin-top:14px;
+  font-family:"Noto Sans CJK SC Black","Noto Sans CJK SC",sans-serif;
+  font-weight:900;
+  font-size:98px;
+  line-height:1.08;
+  color:var(--maroon);
+  letter-spacing:2px;
+}
+.rule-short{
+  width:88px;height:4px;
+  background:var(--gold);
+  margin:22px auto 0;
+  border-radius:2px;
+}
+.subtitle{
+  margin-top:20px;
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  font-size:26px;
+  letter-spacing:6px;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+}
+
+/* ---- body ---- */
+.body{
+  flex:1;
+  padding-top:44px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:32px;
+}
+.tag-label{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  font-size:17px;
+  letter-spacing:3px;
+  color:var(--maroon);
+  text-transform:uppercase;
+}
+.tag-label::before{
+  content:"";
+  width:22px;height:2px;
+  background:var(--gold);
+  display:inline-block;
+}
+.panel{
+  background:var(--stripe);
+  border-radius:6px;
+  padding:36px 40px;
+  position:relative;
+}
+.panel.plain{background:transparent;padding:0;}
+p.copy{
+  font-size:32px;
+  line-height:1.62;
+  color:var(--ink);
+  font-weight:400;
+}
+p.copy b, .copy b{
+  color:var(--maroon);
+  font-weight:700;
+}
+.gold{color:var(--gold);font-weight:700;}
+
+.callout{
+  border:1.5px solid var(--gold);
+  border-radius:6px;
+  padding:38px 42px;
+  background:var(--white);
+  position:relative;
+}
+.callout .qmark{
+  position:absolute;
+  top:-26px;left:36px;
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:900;
+  font-size:70px;
+  color:var(--gold);
+  background:var(--white);
+  padding:0 12px;
+  line-height:1;
+}
+.callout h3{
+  font-family:"Noto Sans CJK SC",sans-serif;
+  font-weight:700;
+  font-size:28px;
+  color:var(--maroon);
+  margin-bottom:16px;
+}
+.callout p{
+  font-size:29px;
+  line-height:1.6;
+  color:var(--ink-soft);
+}
+
+.pills{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.pill{
+  border:1.5px solid var(--maroon);
+  color:var(--maroon);
+  font-weight:700;
+  font-size:24px;
+  padding:10px 28px;
+  border-radius:999px;
+  background:rgba(107,22,38,0.04);
+}
+.pill.lead{
+  background:var(--maroon);
+  color:var(--cream-1);
+  border-color:var(--maroon);
+}
+
+.grid4{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+.gcard{
+  border:1.5px solid var(--gold);
+  border-radius:6px;
+  background:var(--white);
+  padding:26px 26px 24px;
+}
+.gcard .num{
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  font-size:16px;
+  letter-spacing:2px;
+  color:var(--gold);
+}
+.gcard h4{
+  font-family:"Noto Sans CJK SC",sans-serif;
+  font-weight:700;
+  font-size:30px;
+  color:var(--maroon);
+  margin:8px 0 10px;
+}
+.gcard p{
+  font-size:21px;
+  line-height:1.5;
+  color:var(--ink-soft);
+}
+
+.steps{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:22px;
+  padding:16px 0;
+}
+.step .dot{
+  flex:0 0 auto;
+  width:44px;height:44px;
+  border-radius:50%;
+  background:var(--maroon);
+  color:var(--cream-1);
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  font-size:20px;
+  display:flex;align-items:center;justify-content:center;
+}
+.step .txt{
+  font-size:27px;
+  line-height:1.5;
+  color:var(--ink);
+  padding-top:5px;
+}
+.step .txt b{color:var(--maroon);}
+.step-line{
+  width:2px;
+  background:var(--gold-soft);
+  margin-left:22px;
+  height:16px;
+}
+
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+.cbox{
+  border-radius:6px;
+  padding:28px 26px;
+}
+.cbox.no{
+  background:rgba(107,22,38,0.05);
+  border:1.5px solid rgba(107,22,38,0.35);
+}
+.cbox.yes{
+  background:rgba(197,160,89,0.10);
+  border:1.5px solid var(--gold);
+}
+.cbox .mark{
+  font-size:26px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.cbox.no .mark{color:var(--maroon);}
+.cbox.yes .mark{color:#8a6a1f;}
+.cbox p{
+  font-size:23px;
+  line-height:1.5;
+  color:var(--ink-soft);
+}
+
+/* ---- footer ---- */
+.footer{
+  padding-bottom:56px;
+  padding-top:20px;
+}
+.footer .hair{margin-top:0;margin-bottom:30px;}
+.foot-wrap{
+  text-align:center;
+}
+.foot-name{
+  font-family:"Noto Sans CJK SC",sans-serif;
+  font-weight:700;
+  font-size:30px;
+  color:var(--maroon);
+}
+.foot-role{
+  margin-top:8px;
+  font-size:19px;
+  line-height:1.55;
+  color:var(--ink-soft);
+}
+.foot-cta{
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  margin-top:26px;
+  background:var(--maroon);
+  color:var(--cream-1);
+  font-weight:700;
+  font-size:23px;
+  padding:16px 38px;
+  border-radius:999px;
+}
+.foot-cta .ig{
+  color:var(--gold-soft);
+  font-family:"Liberation Sans",sans-serif;
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+/* ================= CAROUSEL variant overrides (denser) ================= */
+body.carousel .page{padding:0 72px;}
+body.carousel .crumb{padding-top:38px;}
+body.carousel .crumb .left,.crumb .right{font-size:13px;}
+body.carousel .header{padding-top:20px;}
+body.carousel .badge{width:78px;height:78px;border-width:2px;}
+body.carousel .badge svg{width:40px;height:40px;}
+body.carousel .kicker{margin-top:14px;font-size:16px;letter-spacing:4px;}
+body.carousel h1.title{margin-top:8px;font-size:72px;letter-spacing:1px;}
+body.carousel .rule-short{margin:14px auto 0;width:70px;height:3px;}
+body.carousel .subtitle{margin-top:12px;font-size:19px;letter-spacing:4px;}
+body.carousel .body{padding-top:22px;gap:20px;}
+body.carousel .tag-label{font-size:14px;}
+body.carousel .panel{padding:24px 28px;}
+body.carousel p.copy{font-size:24px;line-height:1.5;}
+body.carousel .callout{padding:26px 28px;}
+body.carousel .callout .qmark{font-size:52px;top:-20px;left:26px;}
+body.carousel .callout h3{font-size:21px;margin-bottom:10px;}
+body.carousel .callout p{font-size:22px;line-height:1.5;}
+body.carousel .pill{font-size:18px;padding:8px 22px;}
+body.carousel .grid4{gap:14px;}
+body.carousel .gcard{padding:18px 18px 16px;}
+body.carousel .gcard .num{font-size:13px;}
+body.carousel .gcard h4{font-size:23px;margin:6px 0 6px;}
+body.carousel .gcard p{font-size:16px;line-height:1.4;}
+body.carousel .step{gap:16px;padding:9px 0;}
+body.carousel .step .dot{width:34px;height:34px;font-size:15px;}
+body.carousel .step .txt{font-size:20px;line-height:1.4;padding-top:3px;}
+body.carousel .step-line{height:8px;margin-left:17px;}
+body.carousel .compare{gap:14px;}
+body.carousel .cbox{padding:18px 18px;}
+body.carousel .cbox .mark{font-size:19px;margin-bottom:6px;}
+body.carousel .cbox p{font-size:17px;line-height:1.4;}
+body.carousel .footer{padding-bottom:40px;padding-top:10px;}
+body.carousel .footer .hair{margin-bottom:20px;}
+body.carousel .foot-name{font-size:23px;}
+body.carousel .foot-role{margin-top:5px;font-size:14px;}
+body.carousel .foot-cta{margin-top:16px;font-size:17px;padding:11px 26px;gap:10px;}
