@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Debate Beast Vol.2 Poster v6</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:#050308; }
+  .poster {
+    width:1080px; position:relative; overflow:hidden;
+    background:#08050c;
+    font-family:'Helvetica Neue', Arial, sans-serif; color:#fff;
+  }
+
+  /* ===== HERO ===== */
+  .hero { position:relative; width:1080px; height:840px; overflow:hidden;
+    background: linear-gradient(115deg, #0c0810 0%, #0c0810 42%, #150a20 52%, #1a0a1c 62%, #0e0712 100%);
+  }
+  .shard { position:absolute; opacity:.85; filter: drop-shadow(0 0 14px rgba(180,40,220,.5)); }
+
+  .diagDivider {
+    position:absolute; left:52%; top:-10%; width:8px; height:120%;
+    background: linear-gradient(180deg, #7c1bd6, #ff2fa0 45%, #3d7bff 75%, transparent);
+    transform: rotate(18deg); transform-origin:center;
+    box-shadow:0 0 24px 4px rgba(180,40,220,.5);
+  }
+  .diagLabel {
+    position:absolute; left:57.5%; top:34%; width:420px; text-align:center;
+    transform: rotate(90deg) translate(-50%,0); transform-origin:left top;
+    font-size:17px; letter-spacing:9px; font-weight:700; color:#f2e6ff; opacity:.92;
+    text-shadow:0 0 12px rgba(180,60,220,.7);
+  }
+
+  .lockup { position:absolute; left:-46px; top:96px; width:660px; transform:rotate(-4deg); z-index:3; }
+  .lockup .cn { width:600px; display:block; filter: drop-shadow(0 8px 24px rgba(0,0,0,.6)); }
+  .lockup .titles { width:560px; display:block; margin-top:-38px; margin-left:26px; filter: drop-shadow(0 8px 20px rgba(0,0,0,.6)); }
+  .lockup .vol2 { width:270px; display:block; margin-top:-26px; margin-left:300px; transform:rotate(-6deg); filter: drop-shadow(0 6px 16px rgba(0,0,0,.7)); }
+
+  .horsesWrap { position:absolute; right:-40px; top:130px; width:640px; transform:rotate(7deg); z-index:2; opacity:.96; }
+  .horsesWrap img { width:100%; display:block; filter: drop-shadow(0 0 26px rgba(180,30,190,.35)); }
+
+  .vertTag { position:absolute; right:34px; top:60px; writing-mode:vertical-rl; letter-spacing:6px;
+    font-size:15px; font-weight:700; color:#e9d7f5; opacity:.75; z-index:3; }
+
+  /* ===== PRIZE CARDS ===== */
+  .cards { position:relative; height:0; z-index:5; }
+  .card {
+    position:absolute; width:330px; padding:22px 26px 24px;
+    background: linear-gradient(160deg, rgba(18,10,26,.92), rgba(10,6,16,.96));
+    border-top:3px solid; border-image: linear-gradient(90deg,#ff2fa0,#3d7bff) 1;
+    box-shadow: 0 18px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06) inset;
+    transform: skewX(-6deg) rotate(-2deg);
+  }
+  .card .in { transform: skewX(6deg) rotate(2deg); }
+  .card.champion { right:96px; top:-206px; }
+  .card.runner { right:206px; top:-70px; }
+  .card .label { font-size:14px; letter-spacing:3px; font-weight:700; color:#ff62c4; margin-bottom:10px; }
+  .card .amt { font-size:44px; font-weight:800; letter-spacing:.5px; }
+
+  /* ===== INFO GRID ===== */
+  .infoWrap { position:relative; padding:130px 90px 50px; z-index:1; }
+  .infoGrid { display:grid; grid-template-columns:1fr 1fr; column-gap:60px; row-gap:38px; }
+  .infoGrid .lbl { font-size:14px; letter-spacing:3px; font-weight:800; color:#ff62c4; margin-bottom:14px; }
+  .infoGrid .big { font-size:24px; font-weight:800; letter-spacing:.3px; }
+  .infoGrid .sub { font-size:15px; font-weight:600; color:#cfc3d6; margin-top:2px; }
+  .infoGrid .gap2 { margin-top:22px; }
+  .infoGrid .small { font-size:13.5px; color:#9d8fa8; margin-top:14px; line-height:1.6; }
+  .hr { grid-column:1 / -1; height:1px; background:linear-gradient(90deg, rgba(255,98,196,.4), rgba(255,255,255,.06)); }
+
+  .footNote { display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
+  .footNote .disc { font-size:12.5px; color:#7d7085; line-height:1.6; max-width:640px; }
+  .footNote .tfs { font-size:13px; letter-spacing:4px; font-weight:700; color:#ff62c4; white-space:nowrap; }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="hero">
+    <svg class="shard" style="left:640px; top:40px; width:460px; height:760px;" viewBox="0 0 460 760">
+      <defs>
+        <linearGradient id="s1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3d7bff"/><stop offset="100%" stop-color="#ff2fa0"/>
+        </linearGradient>
+        <filter id="sg"><feGaussianBlur stdDeviation="2"/></filter>
+      </defs>
+      <g fill="none" stroke="url(#s1)" stroke-width="2" opacity=".8">
+        <polygon points="120,40 160,10 150,70 100,90" fill="rgba(120,60,220,.18)"/>
+        <polygon points="220,140 270,110 255,190 200,200" fill="rgba(180,40,220,.14)"/>
+        <polygon points="90,260 140,235 128,310 70,320" fill="rgba(80,110,255,.16)"/>
+        <polygon points="260,380 310,350 300,430 240,440" fill="rgba(180,40,220,.14)"/>
+        <polygon points="130,500 175,478 165,545 110,555" fill="rgba(120,60,220,.16)"/>
+        <line x1="160" y1="20" x2="150" y2="560" stroke-width="3" opacity=".55"/>
+      </g>
+    </svg>
+
+    <div class="diagDivider"></div>
+    <div class="diagLabel">WHERE IDEAS BECOME BEASTS.</div>
+
+    <div class="horsesWrap"><img src="sprites/horses.png"></div>
+    <div class="vertTag">VOL. 2 &nbsp;&nbsp; 2027</div>
+
+    <div class="lockup">
+      <img class="cn" src="sprites/cn.png">
+      <div class="titles">
+        <img src="sprites/debate.png" style="width:100%; display:block;">
+        <img src="sprites/beast.png" style="width:100%; display:block; margin-top:-18px;">
+      </div>
+      <img class="vol2" src="sprites/vol2badge.png">
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card champion"><div class="in">
+      <div class="label">CHAMPION &middot; 冠军</div>
+      <div class="amt">RM 2,500</div>
+    </div></div>
+    <div class="card runner"><div class="in">
+      <div class="label">RUNNER-UP &middot; 亚军</div>
+      <div class="amt">RM 1,000</div>
+    </div></div>
+  </div>
+
+  <div class="infoWrap">
+    <div class="infoGrid">
+      <div>
+        <div class="lbl">DATES &middot; 赛事日期</div>
+        <div class="big">09 JAN 2027</div>
+        <div class="sub">PRELIMINARY ROUND &middot; 海选</div>
+        <div class="big gap2">16 JAN 2027</div>
+        <div class="sub">CHAMPIONSHIP &middot; 冠军赛</div>
+      </div>
+      <div>
+        <div class="lbl">VENUE &middot; 地点</div>
+        <div class="big">KLANG VALLEY</div>
+        <div class="big">KUALA LUMPUR</div>
+        <div class="small">EXACT VENUE TO BE ANNOUNCED<br>具体场地待公布</div>
+      </div>
+      <div class="hr"></div>
+      <div>
+        <div class="lbl">FOUNDER &middot; 主理人</div>
+        <div class="big">周珊竹 &nbsp;ZHOU SHANZHU</div>
+        <div class="lbl gap2" style="margin-top:22px;">CREATED &amp; ORGANIZED BY</div>
+        <div class="sub">辩论怪物铸造局<br>THE DEBATE BEAST FOUNDRY</div>
+      </div>
+      <div>
+        <div class="lbl">OFFICIAL ACCOUNTS &middot; 官方账号</div>
+        <div class="sub">INSTAGRAM &nbsp;@debatebeast_vol.2</div>
+        <div class="sub" style="margin-top:6px;">小红书 &nbsp;辩论怪物 Debate Beast Vol.2</div>
+      </div>
+    </div>
+    <div class="footNote">
+      <div class="disc">ALL INFORMATION IS SUBJECT TO CHANGE.<br>最新信息以官方账号公布为准</div>
+      <div class="tfs">THINK &middot; FIGHT &middot; SURVIVE</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
