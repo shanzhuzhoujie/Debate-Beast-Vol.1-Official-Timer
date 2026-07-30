@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Debate Beast Vol.2 Poster v2</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:#0a0a0c; display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
+  .poster {
+    position:relative; width:1080px; height:1440px; overflow:hidden;
+    background:
+      radial-gradient(ellipse 750px 550px at 15% 6%, rgba(120,20,150,.32), transparent 60%),
+      radial-gradient(ellipse 750px 550px at 85% 4%, rgba(150,15,35,.4), transparent 60%),
+      radial-gradient(ellipse 900px 700px at 50% 100%, rgba(90,10,120,.22), transparent 65%),
+      linear-gradient(180deg, #050505 0%, #0c0a0e 40%, #0a0508 75%, #060305 100%);
+    font-family: 'Arial Narrow', Arial, sans-serif; color:#fff;
+  }
+  .art { position:absolute; inset:0; width:1080px; height:1440px; }
+  .grain { position:absolute; inset:0; opacity:.05; mix-blend-mode:overlay; pointer-events:none; }
+
+  .vol2 {
+    position:absolute; top:56px; left:50%; transform:translateX(-50%) skewX(-8deg);
+    font-size:92px; font-weight:900; letter-spacing:4px; font-family:'Arial Black', Arial, sans-serif;
+    background: linear-gradient(180deg, #ff5c72 0%, #c8102e 45%, #7a0d1e 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-stroke: 2px #1a0206;
+    filter: drop-shadow(0 0 22px rgba(200,16,46,.85)) drop-shadow(0 0 40px rgba(150,20,180,.4));
+    z-index:3;
+  }
+
+  .titleWrap { position:absolute; top:168px; left:0; right:0; text-align:center; z-index:2; }
+  .titleEN { position:relative; font-family:'Arial Black', Arial, sans-serif; font-weight:900; text-transform:uppercase; font-size:154px; line-height:0.92; letter-spacing:2px; }
+  .titleEN .back { position:absolute; inset:0; color:#3a0a14; transform:translate(6px,8px); z-index:0; }
+  .titleEN .front {
+    position:relative; z-index:1;
+    background: linear-gradient(180deg, #ffffff 0%, #e7ecf5 28%, #9aa3b8 46%, #ffffff 56%, #7d8598 74%, #c9d0e0 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-stroke: 3px #14151a;
+    filter: drop-shadow(0 0 24px rgba(180,20,60,.5)) drop-shadow(0 0 44px rgba(140,20,190,.38));
+  }
+  .titleCN {
+    margin-top:12px; font-size:100px; font-weight:900; letter-spacing:14px; color:#f5f2ee;
+    text-shadow: 0 0 2px #000, 3px 3px 0 #1a1a1a, 0 0 26px rgba(200,20,60,.6), 0 0 46px rgba(140,20,190,.45);
+  }
+
+  .clawArt { position:absolute; top:230px; left:0; width:1080px; height:340px; z-index:4; pointer-events:none; }
+
+  .tagline { position:absolute; top:630px; left:0; right:0; text-align:center; z-index:2; }
+  .tagline .line1 { display:inline-flex; align-items:center; gap:14px; font-size:26px; letter-spacing:6px; color:#ff3d5c; font-weight:700; }
+  .tagline .line1 .bar { width:60px; height:2px; background:linear-gradient(90deg, transparent, #ff3d5c); }
+  .tagline .line1 .bar.r { background:linear-gradient(90deg, #ff3d5c, transparent); }
+  .tagline .line2 { margin-top:14px; font-size:22px; letter-spacing:10px; color:#e9e4de; font-weight:600; }
+  .slogan { position:absolute; top:718px; left:0; right:0; text-align:center; font-style:italic; font-size:19px; letter-spacing:3px; color:#c9a9e8; text-shadow:0 0 12px rgba(150,20,190,.5); z-index:2; }
+
+  .prize { position:absolute; top:788px; left:0; right:0; display:flex; align-items:center; justify-content:center; gap:46px; z-index:2; }
+  .prize .col { text-align:center; }
+  .prize .label { font-size:20px; letter-spacing:6px; color:#e6c98a; font-weight:700; }
+  .prize .amt { font-family:'Arial Black', Arial, sans-serif; font-weight:900; font-size:64px;
+    background: linear-gradient(180deg,#fff,#d8dce6 40%,#96a0b3 55%,#fff 70%,#7d8598);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-stroke: 2px #14151a; filter: drop-shadow(0 0 16px rgba(200,20,60,.5)); line-height:1; }
+  .prize .amt.champ { filter: drop-shadow(0 0 16px rgba(200,20,60,.5)) drop-shadow(0 0 22px rgba(150,20,190,.35)); font-size:74px;}
+  .prize .rm { font-size:.42em; vertical-align:middle; margin-right:6px; }
+  .prize .divider { width:5px; height:120px; background: linear-gradient(180deg, transparent, #ff2d55, #7c1bd6, transparent); transform:rotate(14deg); box-shadow:0 0 16px rgba(200,20,90,.6); }
+
+  .beastBand { position:absolute; top:930px; left:0; width:1080px; height:150px; z-index:2; }
+
+  .infobar {
+    position:absolute; left:60px; right:60px; top:1050px; z-index:2;
+    border:1px solid rgba(255,61,92,.55); border-radius:10px;
+    background: linear-gradient(180deg, rgba(30,6,12,.6), rgba(10,4,8,.8));
+    padding:30px 10px; display:grid; grid-template-columns: repeat(4,1fr);
+  }
+  .infobar .cell { text-align:center; padding:0 12px; border-right:1px solid rgba(255,255,255,.12); }
+  .infobar .cell:last-child { border-right:none; }
+  .infobar .k { font-size:15px; letter-spacing:2px; color:#ff5c72; font-weight:700; margin-bottom:8px; }
+  .infobar .k2 { font-size:13px; color:#c9a9e8; letter-spacing:1px; margin-bottom:10px; }
+  .infobar .v { font-size:17px; color:#f2eee8; font-weight:600; line-height:1.5; }
+  .infobar .v.small { font-size:14px; color:#cfcac2; font-weight:500; }
+  .infobar .v.tiny { font-size:12.5px; color:#cfcac2; font-weight:500; line-height:1.42; letter-spacing:.2px; }
+  .rivet { position:absolute; width:11px; height:11px; border-radius:50%;
+    background:radial-gradient(circle at 35% 32%, #fff, #8b93a6 42%, #2a2a30 100%);
+    box-shadow:0 1px 3px rgba(0,0,0,.7); }
+  .rivet.tl { top:9px; left:9px; } .rivet.tr { top:9px; right:9px; }
+  .rivet.bl { bottom:9px; left:9px; } .rivet.br { bottom:9px; right:9px; }
+
+  .note { position:absolute; left:0; right:0; top:1245px; text-align:center; font-size:15px; color:#a99fae; letter-spacing:.5px; line-height:1.7; padding:0 90px; z-index:2; }
+  .note b { color:#e6c98a; }
+
+  .footerBar { position:absolute; left:0; right:0; bottom:0; height:74px; background: linear-gradient(90deg, #7c1bd6, #c81b6a 45%, #ff2d55 100%); display:flex; align-items:center; justify-content:center; z-index:2; }
+  .footerBar .t { font-family:'Arial Black', Arial, sans-serif; font-weight:900; font-size:30px; letter-spacing:12px; color:#0a0a0c; }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ===== background art: chain-link fence, hanging chains, spotlights, beast eyes ===== -->
+  <svg class="art" viewBox="0 0 1080 1440" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="wireHi" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity=".9"/>
+        <stop offset="50%" stop-color="#9aa3b8" stop-opacity=".5"/>
+        <stop offset="100%" stop-color="#2a2a30" stop-opacity=".7"/>
+      </linearGradient>
+      <linearGradient id="chainMetal" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#f2f2f5"/>
+        <stop offset="35%" stop-color="#8b93a6"/>
+        <stop offset="55%" stop-color="#3f424c"/>
+        <stop offset="100%" stop-color="#9aa3b8"/>
+      </linearGradient>
+      <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffb3c0"/>
+        <stop offset="35%" stop-color="#ff2d4d"/>
+        <stop offset="75%" stop-color="#8a0020"/>
+        <stop offset="100%" stop-color="#8a0020" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="lightSpot" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity=".9"/>
+        <stop offset="45%" stop-color="#ffffff" stop-opacity=".2"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="lightning" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ff3d5c"/>
+        <stop offset="100%" stop-color="#9a2dd6"/>
+      </linearGradient>
+      <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="6" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <mask id="fadeMask">
+        <radialGradient id="fadeGrad" cx="50%" cy="34%" r="62%">
+          <stop offset="0%" stop-color="#fff"/>
+          <stop offset="75%" stop-color="#fff" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="#000"/>
+        </radialGradient>
+        <rect width="1080" height="1440" fill="url(#fadeGrad)"/>
+      </mask>
+      <pattern id="chainLinkFence" width="52" height="52" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+        <g fill="none" stroke="url(#wireHi)" stroke-width="2">
+          <line x1="0" y1="52" x2="52" y2="0"/>
+          <line x1="-1" y1="51" x2="51" y2="-1" stroke-opacity=".55" stroke-width="1"/>
+          <line x1="0" y1="0" x2="52" y2="52"/>
+          <line x1="1" y1="-1" x2="53" y2="51" stroke-opacity=".55" stroke-width="1"/>
+        </g>
+      </pattern>
+    </defs>
+
+    <!-- fence mesh -->
+    <rect width="1080" height="1440" fill="url(#chainLinkFence)" opacity=".22" mask="url(#fadeMask)"/>
+
+    <!-- spotlights -->
+    <circle cx="60" cy="30" r="170" fill="url(#lightSpot)" opacity=".6"/>
+    <circle cx="1020" cy="20" r="170" fill="url(#lightSpot)" opacity=".6"/>
+
+    <!-- hand-drawn crown above VOL.2 -->
+    <g transform="translate(490,4)" filter="url(#softGlow)">
+      <path d="M0,46 L0,18 L14,32 L25,8 L38,30 L50,4 L62,30 L75,8 L86,32 L100,18 L100,46 Z"
+            fill="none" stroke="url(#chainMetal)" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="25" cy="8" r="4" fill="url(#eyeGlow)"/>
+      <circle cx="50" cy="4" r="5" fill="url(#eyeGlow)"/>
+      <circle cx="75" cy="8" r="4" fill="url(#eyeGlow)"/>
+    </g>
+
+    <!-- hand-drawn microphones flanking the tagline -->
+    <g transform="translate(66,540)" filter="url(#softGlow)">
+      <path d="M28,0 C10,0 0,12 0,30 C0,48 10,60 28,60 C46,60 56,48 56,30 C56,12 46,0 28,0 Z"
+            fill="#0c0c10" stroke="url(#wireHi)" stroke-width="2.5"/>
+      <g stroke="url(#wireHi)" stroke-width="2" opacity=".8">
+        <line x1="10" y1="16" x2="46" y2="16"/>
+        <line x1="8" y1="26" x2="48" y2="26"/>
+        <line x1="8" y1="36" x2="48" y2="36"/>
+        <line x1="10" y1="46" x2="46" y2="46"/>
+      </g>
+      <path d="M-6,34 C-6,58 12,74 28,74 C44,74 62,58 62,34" fill="none" stroke="url(#wireHi)" stroke-width="3"/>
+      <line x1="28" y1="74" x2="28" y2="104" stroke="url(#wireHi)" stroke-width="4"/>
+      <line x1="10" y1="104" x2="46" y2="104" stroke="url(#wireHi)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(958,540) scale(-1,1)" filter="url(#softGlow)">
+      <path d="M28,0 C10,0 0,12 0,30 C0,48 10,60 28,60 C46,60 56,48 56,30 C56,12 46,0 28,0 Z"
+            fill="#0c0c10" stroke="url(#wireHi)" stroke-width="2.5"/>
+      <g stroke="url(#wireHi)" stroke-width="2" opacity=".8">
+        <line x1="10" y1="16" x2="46" y2="16"/>
+        <line x1="8" y1="26" x2="48" y2="26"/>
+        <line x1="8" y1="36" x2="48" y2="36"/>
+        <line x1="10" y1="46" x2="46" y2="46"/>
+      </g>
+      <path d="M-6,34 C-6,58 12,74 28,74 C44,74 62,58 62,34" fill="none" stroke="url(#wireHi)" stroke-width="3"/>
+      <line x1="28" y1="74" x2="28" y2="104" stroke="url(#wireHi)" stroke-width="4"/>
+      <line x1="10" y1="104" x2="46" y2="104" stroke="url(#wireHi)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+
+    <!-- hanging chains from top corners -->
+    <g filter="url(#softGlow)">
+      <g stroke="url(#chainMetal)" stroke-width="5" fill="none">
+        <ellipse cx="58" cy="46" rx="17" ry="10" transform="rotate(24 58 46)"/>
+        <ellipse cx="66" cy="86" rx="16" ry="9" transform="rotate(-22 66 86)"/>
+        <ellipse cx="60" cy="124" rx="15" ry="9" transform="rotate(24 60 124)"/>
+        <ellipse cx="68" cy="160" rx="14" ry="8" transform="rotate(-22 68 160)"/>
+        <ellipse cx="63" cy="194" rx="13" ry="7" transform="rotate(20 63 194)"/>
+      </g>
+      <g stroke="url(#chainMetal)" stroke-width="5" fill="none">
+        <ellipse cx="1022" cy="46" rx="17" ry="10" transform="rotate(-24 1022 46)"/>
+        <ellipse cx="1014" cy="86" rx="16" ry="9" transform="rotate(22 1014 86)"/>
+        <ellipse cx="1020" cy="124" rx="15" ry="9" transform="rotate(-24 1020 124)"/>
+        <ellipse cx="1012" cy="160" rx="14" ry="8" transform="rotate(22 1012 160)"/>
+        <ellipse cx="1017" cy="194" rx="13" ry="7" transform="rotate(-20 1017 194)"/>
+      </g>
+    </g>
+
+    <!-- beast eyes -->
+    <g filter="url(#softGlow)">
+      <path d="M118,74 Q150,52 182,74 Q150,90 118,74 Z" fill="url(#eyeGlow)" transform="rotate(-10 150 74)"/>
+      <rect x="147" y="60" width="6" height="28" rx="3" fill="#2a0008" transform="rotate(-10 150 74)"/>
+      <path d="M898,74 Q930,52 962,74 Q930,90 898,74 Z" fill="url(#eyeGlow)" transform="rotate(10 930 74)"/>
+      <rect x="927" y="60" width="6" height="28" rx="3" fill="#2a0008" transform="rotate(10 930 74)"/>
+    </g>
+
+    <!-- ===== beast head confrontation band (~ y930-1050) ===== -->
+    <g transform="translate(70,940)">
+      <g filter="url(#softGlow)">
+        <path d="M10,150 L28,120 L14,108 L34,85 L18,74 L42,52 L26,42 L58,18 L78,34 L130,30 L165,48 L145,60 L160,72 L138,78 L112,88 L86,118 L60,142 L10,150 Z"
+              fill="#0c0c10" stroke="url(#wireHi)" stroke-width="2"/>
+        <circle cx="97" cy="58" r="6" fill="url(#eyeGlow)"/>
+      </g>
+    </g>
+    <g transform="translate(1010,940) scale(-1,1)">
+      <g filter="url(#softGlow)">
+        <path d="M10,150 L28,120 L14,108 L34,85 L18,74 L42,52 L26,42 L58,18 L78,34 L130,30 L165,48 L145,60 L160,72 L138,78 L112,88 L86,118 L60,142 L10,150 Z"
+              fill="#0c0c10" stroke="url(#wireHi)" stroke-width="2"/>
+        <circle cx="97" cy="58" r="6" fill="url(#eyeGlow)"/>
+      </g>
+    </g>
+    <!-- lightning between the two heads, with small branch crackles -->
+    <g filter="url(#softGlow)" transform="translate(505,955)" stroke="url(#lightning)" stroke-linejoin="round" stroke-linecap="round" fill="none">
+      <path d="M20,0 L0,45 L16,55 L-6,110 L14,95 L0,140" stroke-width="5"/>
+      <path d="M16,55 L34,68 L26,80" stroke-width="2.5" opacity=".75"/>
+      <path d="M-6,110 L-24,118 L-16,132" stroke-width="2.5" opacity=".7"/>
+    </g>
+  </svg>
+
+  <!-- text content -->
+  <div class="vol2">VOL.2</div>
+
+  <div class="titleWrap">
+    <div class="titleEN"><div class="back">DEBATE</div><div class="front">DEBATE</div></div>
+    <div class="titleEN" style="margin-top:-16px;"><div class="back">BEAST</div><div class="front">BEAST</div></div>
+    <div class="titleCN">辩论怪物</div>
+  </div>
+
+  <!-- claw marks, drawn as tapered ripped shapes, above the title -->
+  <svg class="clawArt" viewBox="0 0 1080 340" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="clawGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ff2d55" stop-opacity="0"/>
+        <stop offset="18%" stop-color="#ff2d55" stop-opacity=".95"/>
+        <stop offset="55%" stop-color="#c81b6a"/>
+        <stop offset="85%" stop-color="#7c1bd6" stop-opacity=".95"/>
+        <stop offset="100%" stop-color="#7c1bd6" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="clawGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <g filter="url(#clawGlow)" fill="url(#clawGrad)">
+      <path d="M470,30 L868,150 L860,166 L466,50 Z"/>
+      <path d="M520,10 L845,110 L840,120 L516,22 Z" opacity=".8"/>
+      <path d="M430,60 L800,190 L794,202 L426,74 Z" opacity=".65"/>
+    </g>
+    <!-- shard debris bursting from the claw impact -->
+    <g filter="url(#clawGlow)" fill="url(#clawGrad)" opacity=".85">
+      <path d="M855,158 L882,148 L872,172 Z"/>
+      <path d="M840,178 L862,190 L836,198 L832,182 Z"/>
+      <path d="M792,196 L812,206 L798,218 L784,208 Z"/>
+      <path d="M700,88 L714,72 L722,92 L708,102 Z"/>
+      <path d="M878,132 L896,138 L884,150 Z"/>
+    </g>
+  </svg>
+
+  <div class="tagline">
+    <div class="line1"><span class="bar"></span>全马首创 1v1 街头观点对决<span class="bar r"></span></div>
+    <div class="line2">思想出圈 · 败者淘汰</div>
+  </div>
+  <div class="slogan">WHERE IDEAS BECOME BEAST.</div>
+
+  <div class="prize">
+    <div class="col"><div class="label">&#9819; CHAMPION</div><div class="amt champ"><span class="rm">RM</span>2,500</div></div>
+    <div class="divider"></div>
+    <div class="col"><div class="label">RUNNER-UP</div><div class="amt"><span class="rm">RM</span>1,000</div></div>
+  </div>
+
+  <div class="infobar">
+    <span class="rivet tl"></span><span class="rivet tr"></span><span class="rivet bl"></span><span class="rivet br"></span>
+    <div class="cell"><div class="k">ORGANIZED BY</div><div class="k2">主办方</div><div class="v small">辩论怪物铸造局<br>The Debate Beast Foundry</div></div>
+    <div class="cell"><div class="k">FOUNDER</div><div class="k2">主理人兼创始人</div><div class="v">周珊竹<br>ZHOU SHANZHU</div></div>
+    <div class="cell"><div class="k">DATE</div><div class="k2">日期（暂定）</div><div class="v tiny">9/1/2027<br>PRELIMINARY ROUND 海选<br>16/1/2027<br>CHAMPIONSHIP 冠军赛</div></div>
+    <div class="cell"><div class="k">LOCATION</div><div class="k2">地点</div><div class="v">Kuala Lumpur<br>吉隆坡 · 巴生谷</div></div>
+  </div>
+
+  <div class="note">
+    *以上信息如有更动，恕不另行通知，<b>一切资讯请以官方账号公布为准</b><br>
+    ALL INFO SUBJECT TO CHANGE — FOLLOW OFFICIAL IG <b>@debatebeast_vol.2</b> FOR UPDATES
+  </div>
+
+  <div class="footerBar"><div class="t">THINK. FIGHT. SURVIVE.</div></div>
+</div>
+</body>
+</html>
