@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Debate Beast Vol.2 Poster v5</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:#07040a; display:flex; align-items:center; justify-content:center; }
+  .poster {
+    width:1080px; color:#fff; font-family:'Arial Narrow', Arial, sans-serif;
+    position:relative; overflow:hidden;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% 0%, rgba(180,20,140,.35), transparent 60%),
+      radial-gradient(ellipse 700px 600px at 10% 40%, rgba(120,20,180,.22), transparent 60%),
+      radial-gradient(ellipse 700px 600px at 90% 55%, rgba(150,10,110,.22), transparent 60%),
+      linear-gradient(180deg, #0b0610 0%, #0c0710 35%, #0a0510 70%, #060309 100%);
+  }
+  .art { position:absolute; inset:0; width:1080px; }
+  .col { display:flex; flex-direction:column; align-items:center; position:relative; z-index:1; padding-bottom:8px; }
+
+  .badge { width:300px; margin-top:34px; }
+  .horses { width:900px; margin-top:6px; }
+  .debate { width:1040px; margin-top:-4px; }
+  .beast  { width:1040px; margin-top:-30px; }
+  .cn     { width:900px; margin-top:-8px; }
+
+  .tagline { text-align:center; margin-top:22px; }
+  .tagline img.t1 { width:620px; }
+  .tagline img.t2 { width:400px; margin-top:8px; }
+
+  .prizeRow { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:34px; width:100%; }
+  .prizeRow img.mic { width:100px; }
+  .prizeRow img.champion { width:360px; }
+  .prizeRow img.runner { width:368px; }
+  .prizeRow .divider { width:5px; height:100px; background: linear-gradient(180deg, transparent, #ff2fa0, #9a1fd6, transparent); transform:rotate(12deg); box-shadow:0 0 16px rgba(220,20,150,.6); }
+
+  .gap { width:100%; padding: 34px 60px 18px; }
+
+  .infobar {
+    position:relative;
+    border:1px solid rgba(255,47,160,.55); border-radius:10px;
+    background: linear-gradient(180deg, rgba(30,6,26,.6), rgba(10,4,10,.8));
+    padding:28px 10px; display:grid; grid-template-columns: repeat(4,1fr);
+  }
+  .infobar .cell { text-align:center; padding:0 12px; border-right:1px solid rgba(255,255,255,.12); }
+  .infobar .cell:last-child { border-right:none; }
+  .infobar .k { font-size:15px; letter-spacing:2px; color:#ff5cc4; font-weight:700; margin-bottom:8px; }
+  .infobar .k2 { font-size:13px; color:#c9a9e8; letter-spacing:1px; margin-bottom:10px; }
+  .infobar .v { font-size:17px; color:#f2eee8; font-weight:600; line-height:1.5; }
+  .infobar .v.tiny { font-size:12.5px; color:#cfcac2; font-weight:500; line-height:1.42; letter-spacing:.2px; }
+  .rivet { position:absolute; width:11px; height:11px; border-radius:50%;
+    background:radial-gradient(circle at 35% 32%, #fff, #b58bc9 42%, #2a2a30 100%);
+    box-shadow:0 1px 3px rgba(0,0,0,.7); }
+  .rivet.tl { top:9px; left:9px; } .rivet.tr { top:9px; right:9px; }
+  .rivet.bl { bottom:9px; left:9px; } .rivet.br { bottom:9px; right:9px; }
+
+  .note {
+    text-align:center; font-size:15px; color:#b299bb; letter-spacing:.5px; line-height:1.7;
+    padding:20px 30px 6px;
+  }
+  .note b { color:#e6c98a; }
+
+  .footerband { width:100%; display:block; margin-top:4px; }
+
+  .mesh {
+    position:absolute; inset:0; opacity:.16;
+    background-image:
+      repeating-linear-gradient(58deg, rgba(255,255,255,.5) 0 2px, transparent 2px 36px),
+      repeating-linear-gradient(-58deg, rgba(255,255,255,.5) 0 2px, transparent 2px 36px);
+    mask-image: radial-gradient(ellipse 1000px 1400px at 50% 30%, black 40%, transparent 88%);
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="mesh"></div>
+
+  <div class="col">
+    <img class="badge" src="sprites/vol2badge.png">
+    <img class="horses" src="sprites/horses.png">
+    <img class="debate" src="sprites/debate.png">
+    <img class="beast" src="sprites/beast.png">
+    <img class="cn" src="sprites/cn.png">
+    <div class="tagline">
+      <img class="t1" src="sprites/tagline1.png"><br>
+      <img class="t2" src="sprites/tagline2.png">
+    </div>
+    <div class="prizeRow">
+      <img class="mic" src="sprites/micL.png">
+      <img class="champion" src="sprites/champion.png">
+      <div class="divider"></div>
+      <img class="runner" src="sprites/runner.png">
+      <img class="mic" src="sprites/micR.png">
+    </div>
+  </div>
+
+  <div class="gap">
+    <div class="infobar">
+      <span class="rivet tl"></span><span class="rivet tr"></span><span class="rivet bl"></span><span class="rivet br"></span>
+      <div class="cell"><div class="k">ORGANIZED BY</div><div class="k2">主办方</div><div class="v tiny">辩论怪物铸造局<br>The Debate Beast Foundry</div></div>
+      <div class="cell"><div class="k">FOUNDER</div><div class="k2">主理人兼创始人</div><div class="v">周珊竹<br>ZHOU SHANZHU</div></div>
+      <div class="cell"><div class="k">DATE</div><div class="k2">日期（暂定）</div><div class="v tiny">9/1/2027<br>PRELIMINARY ROUND 海选<br>16/1/2027<br>CHAMPIONSHIP 冠军赛</div></div>
+      <div class="cell"><div class="k">LOCATION</div><div class="k2">地点</div><div class="v">Kuala Lumpur<br>吉隆坡 · 巴生谷</div></div>
+    </div>
+    <div class="note">
+      *以上信息如有更动，恕不另行通知，<b>一切资讯请以官方账号公布为准</b><br>
+      ALL INFO SUBJECT TO CHANGE — FOLLOW OFFICIAL IG <b>@debatebeast_vol.2</b> FOR UPDATES
+    </div>
+  </div>
+  <img class="footerband" src="footerband_v5.png">
+</div>
+</body>
+</html>
