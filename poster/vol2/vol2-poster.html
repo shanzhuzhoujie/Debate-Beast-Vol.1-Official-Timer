@@ -1,0 +1,310 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Debate Beast Vol.2 Poster</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body {
+    background:#0a0a0c;
+    display:flex; align-items:center; justify-content:center;
+    width:100%; height:100%;
+  }
+  .poster {
+    position:relative;
+    width:1080px; height:1440px;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 700px 500px at 15% 8%, rgba(120,20,150,.35), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 85% 6%, rgba(150,15,35,.4), transparent 60%),
+      radial-gradient(ellipse 900px 700px at 50% 100%, rgba(90,10,120,.25), transparent 65%),
+      linear-gradient(180deg, #050505 0%, #0c0a0e 40%, #0a0508 75%, #060305 100%);
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    color:#fff;
+  }
+
+  /* chain-link texture overlay */
+  .mesh {
+    position:absolute; inset:0;
+    opacity:.14;
+    background-image:
+      repeating-linear-gradient(60deg, rgba(255,255,255,.5) 0 2px, transparent 2px 34px),
+      repeating-linear-gradient(-60deg, rgba(255,255,255,.5) 0 2px, transparent 2px 34px);
+    mask-image: radial-gradient(ellipse 900px 1100px at 50% 30%, black 40%, transparent 85%);
+  }
+
+  .grain {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,.05), transparent 2%),
+      radial-gradient(circle at 80% 40%, rgba(255,255,255,.04), transparent 2%);
+    pointer-events:none;
+  }
+
+  /* spotlights top corners */
+  .spot { position:absolute; top:-60px; width:340px; height:340px; border-radius:50%;
+    background: radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,.15) 40%, transparent 70%);
+    filter: blur(6px); opacity:.55; }
+  .spot.l { left:-90px; }
+  .spot.r { right:-90px; }
+
+  /* eyes */
+  .eye { position:absolute; top:70px; width:46px; height:26px; border-radius:50%;
+    background: radial-gradient(circle, #ff2d4d 0%, #b3002f 55%, transparent 75%);
+    box-shadow: 0 0 30px 8px rgba(255,20,60,.85), 0 0 60px 18px rgba(160,10,180,.35);
+  }
+  .eye.l { left:150px; transform:rotate(-8deg); }
+  .eye.r { right:150px; transform:rotate(8deg); }
+
+  .crown {
+    position:absolute; top:18px; left:50%; transform:translateX(-50%);
+    font-size:34px; color:#e6c98a;
+    text-shadow: 0 0 14px rgba(230,201,138,.9), 0 0 26px rgba(150,20,180,.5);
+  }
+
+  .vol2 {
+    position:absolute; top:60px; left:50%; transform:translateX(-50%) skewX(-8deg);
+    font-size:96px; font-weight:900; letter-spacing:4px;
+    font-family:'Arial Black', Arial, sans-serif;
+    background: linear-gradient(180deg, #ff5c72 0%, #c8102e 45%, #7a0d1e 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-stroke: 2px #1a0206;
+    filter: drop-shadow(0 0 22px rgba(200,16,46,.85)) drop-shadow(0 0 40px rgba(150,20,180,.4));
+  }
+
+  .titleWrap {
+    position:absolute; top:170px; left:0; right:0;
+    text-align:center;
+  }
+  .titleEN {
+    position:relative;
+    font-family:'Arial Black', Arial, sans-serif;
+    font-weight:900; text-transform:uppercase;
+    font-size:158px; line-height:0.92; letter-spacing:2px;
+  }
+  .titleEN .back {
+    position:absolute; inset:0; color:#3a0a14; transform:translate(6px,8px);
+    -webkit-text-stroke: 0; z-index:0;
+  }
+  .titleEN .front {
+    position:relative; z-index:1;
+    background: linear-gradient(180deg, #ffffff 0%, #e7ecf5 30%, #9aa3b8 48%, #ffffff 58%, #7d8598 75%, #c9d0e0 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-stroke: 3px #14151a;
+    filter: drop-shadow(0 0 26px rgba(180,20,60,.55)) drop-shadow(0 0 46px rgba(140,20,190,.4));
+  }
+
+  .claw {
+    position:absolute; height:8px; width:520px;
+    background: linear-gradient(90deg, transparent, #ff2d55 20%, #c81b6a 50%, #7c1bd6 80%, transparent);
+    filter: blur(1px);
+    box-shadow: 0 0 18px 3px rgba(200,20,90,.7);
+    border-radius:4px;
+  }
+  .claw1 { top:262px; left:560px; transform:rotate(-32deg); }
+  .claw2 { top:300px; left:590px; transform:rotate(-32deg); width:380px; height:5px; opacity:.75; }
+  .claw3 { top:236px; left:530px; transform:rotate(-32deg); width:300px; height:4px; opacity:.55; }
+
+  .titleCN {
+    margin-top:14px;
+    font-size:104px; font-weight:900; letter-spacing:14px;
+    color:#f5f2ee;
+    text-shadow:
+      0 0 2px #000,
+      3px 3px 0 #1a1a1a,
+      0 0 26px rgba(200,20,60,.6),
+      0 0 46px rgba(140,20,190,.45);
+  }
+
+  .tagline {
+    position:absolute; top:642px; left:0; right:0; text-align:center;
+  }
+  .tagline .line1 {
+    display:inline-flex; align-items:center; gap:14px;
+    font-size:26px; letter-spacing:6px; color:#ff3d5c; font-weight:700;
+  }
+  .tagline .line1 .bar { width:60px; height:2px; background:linear-gradient(90deg, transparent, #ff3d5c); }
+  .tagline .line1 .bar.r { background:linear-gradient(90deg, #ff3d5c, transparent); }
+  .tagline .line2 {
+    margin-top:14px;
+    font-size:22px; letter-spacing:10px; color:#e9e4de; font-weight:600;
+  }
+
+  .slogan {
+    position:absolute; top:730px; left:0; right:0; text-align:center;
+    font-style:italic; font-size:19px; letter-spacing:3px; color:#c9a9e8;
+    text-shadow: 0 0 12px rgba(150,20,190,.5);
+  }
+
+  .mic { position:absolute; top:520px; width:64px; }
+  .mic.l { left:70px; }
+  .mic.r { right:70px; }
+  .mic .head {
+    width:64px; height:88px; border-radius:32px;
+    background: linear-gradient(160deg,#3a3a3f,#0c0c0e 60%,#1c1c20);
+    border: 3px solid #6b6b74;
+    box-shadow: inset 0 0 12px rgba(255,255,255,.15), 0 0 18px rgba(200,20,60,.35);
+  }
+  .mic .grille { position:absolute; top:10px; left:8px; right:8px; height:56px; border-radius:24px;
+    background: repeating-linear-gradient(0deg, #55555c 0 3px, transparent 3px 7px); opacity:.6; }
+  .mic .stem { width:6px; height:70px; margin:0 auto; background:linear-gradient(180deg,#6b6b74,#222); }
+  .mic .arc { width:70px; height:70px; margin:0 auto; margin-top:-6px;
+    border:5px solid #6b6b74; border-top:none; border-radius:0 0 70px 70px; opacity:.7;}
+
+  .prize {
+    position:absolute; top:800px; left:0; right:0;
+    display:flex; align-items:center; justify-content:center; gap:46px;
+  }
+  .prize .col { text-align:center; }
+  .prize .label { font-size:20px; letter-spacing:6px; color:#e6c98a; font-weight:700; }
+  .prize .amt {
+    font-family:'Arial Black', Arial, sans-serif; font-weight:900; font-size:64px;
+    background: linear-gradient(180deg,#fff,#d8dce6 40%,#96a0b3 55%,#fff 70%,#7d8598);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    -webkit-text-stroke: 2px #14151a;
+    filter: drop-shadow(0 0 16px rgba(200,20,60,.5));
+    line-height:1;
+  }
+  .prize .amt.champ { filter: drop-shadow(0 0 16px rgba(200,20,60,.5)) drop-shadow(0 0 22px rgba(150,20,190,.35)); font-size:74px;}
+  .prize .rm { font-size:.42em; vertical-align:middle; margin-right:6px; }
+  .prize .divider {
+    width:5px; height:120px;
+    background: linear-gradient(180deg, transparent, #ff2d55, #7c1bd6, transparent);
+    transform:rotate(14deg);
+    box-shadow:0 0 16px rgba(200,20,90,.6);
+  }
+
+  .divider2 {
+    position:absolute; top:960px; left:90px; right:90px; height:2px;
+    background: linear-gradient(90deg, transparent, #ff3d5c 15%, #c9a9e8 50%, #7c1bd6 85%, transparent);
+    opacity:.7;
+  }
+
+  .infobar {
+    position:absolute; left:60px; right:60px; top:1010px;
+    border:1px solid rgba(255,61,92,.55);
+    border-radius:10px;
+    background: linear-gradient(180deg, rgba(30,6,12,.55), rgba(10,4,8,.75));
+    box-shadow: 0 0 30px rgba(120,10,150,.15) inset;
+    padding:30px 10px;
+    display:grid; grid-template-columns: repeat(4,1fr);
+  }
+  .infobar .cell { text-align:center; padding:0 12px; border-right:1px solid rgba(255,255,255,.12); }
+  .infobar .cell:last-child { border-right:none; }
+  .infobar .k { font-size:15px; letter-spacing:2px; color:#ff5c72; font-weight:700; margin-bottom:8px; }
+  .infobar .k2 { font-size:13px; color:#c9a9e8; letter-spacing:1px; margin-bottom:10px; }
+  .infobar .v { font-size:17px; color:#f2eee8; font-weight:600; line-height:1.5; }
+  .infobar .v.small { font-size:14px; color:#cfcac2; font-weight:500; }
+
+  .note {
+    position:absolute; left:0; right:0; top:1230px; text-align:center;
+    font-size:15px; color:#a99fae; letter-spacing:.5px; line-height:1.7; padding:0 90px;
+  }
+  .note b { color:#e6c98a; }
+
+  .footerBar {
+    position:absolute; left:0; right:0; bottom:0; height:74px;
+    background: linear-gradient(90deg, #7c1bd6, #c81b6a 45%, #ff2d55 100%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .footerBar .t {
+    font-family:'Arial Black', Arial, sans-serif; font-weight:900;
+    font-size:30px; letter-spacing:12px; color:#0a0a0c;
+  }
+
+  .bottomGlow {
+    position:absolute; left:0; right:0; bottom:74px; height:2px;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    opacity:.5;
+  }
+</style>
+</head>
+<body>
+  <div class="poster">
+    <div class="mesh"></div>
+    <div class="grain"></div>
+    <div class="spot l"></div>
+    <div class="spot r"></div>
+    <div class="eye l"></div>
+    <div class="eye r"></div>
+    <div class="crown">&#9819;</div>
+    <div class="vol2">VOL.2</div>
+
+    <div class="mic l">
+      <div class="head"><div class="grille"></div></div>
+      <div class="stem"></div><div class="arc"></div>
+    </div>
+    <div class="mic r">
+      <div class="head"><div class="grille"></div></div>
+      <div class="stem"></div><div class="arc"></div>
+    </div>
+
+    <div class="titleWrap">
+      <div class="titleEN">
+        <div class="back">DEBATE</div>
+        <div class="front">DEBATE</div>
+      </div>
+      <div class="titleEN" style="margin-top:-16px;">
+        <div class="back">BEAST</div>
+        <div class="front">BEAST</div>
+      </div>
+      <div class="claw claw3"></div>
+      <div class="claw claw1"></div>
+      <div class="claw claw2"></div>
+      <div class="titleCN">辩论怪物</div>
+    </div>
+
+    <div class="tagline">
+      <div class="line1"><span class="bar"></span>全马首创 1v1 街头观点对决<span class="bar r"></span></div>
+      <div class="line2">思想出圈 · 败者淘汰</div>
+    </div>
+
+    <div class="slogan">WHERE IDEAS BECOME BEAST.</div>
+
+    <div class="prize">
+      <div class="col">
+        <div class="label">&#9819; CHAMPION</div>
+        <div class="amt champ"><span class="rm">RM</span>2,500</div>
+      </div>
+      <div class="divider"></div>
+      <div class="col">
+        <div class="label">RUNNER-UP</div>
+        <div class="amt"><span class="rm">RM</span>1,000</div>
+      </div>
+    </div>
+
+    <div class="divider2"></div>
+
+    <div class="infobar">
+      <div class="cell">
+        <div class="k">ORGANIZED BY</div>
+        <div class="k2">主办方</div>
+        <div class="v small">辩论怪物铸造局<br>The Debate Beast Foundry</div>
+      </div>
+      <div class="cell">
+        <div class="k">FOUNDER</div>
+        <div class="k2">主理人兼创始人</div>
+        <div class="v">周珊竹<br>ZHOU SHANZHU</div>
+      </div>
+      <div class="cell">
+        <div class="k">DATE</div>
+        <div class="k2">日期（暂定）</div>
+        <div class="v small">9/1/2027 海选<br>16/1/2027 冠军赛</div>
+      </div>
+      <div class="cell">
+        <div class="k">LOCATION</div>
+        <div class="k2">地点</div>
+        <div class="v">Kuala Lumpur<br>吉隆坡 · 巴生谷</div>
+      </div>
+    </div>
+
+    <div class="note">
+      *以上信息如有更动，恕不另行通知，<b>一切资讯请以官方账号公布为准</b><br>
+      ALL INFO SUBJECT TO CHANGE — FOLLOW OFFICIAL IG <b>@debatebeast_vol.2</b> FOR UPDATES
+    </div>
+
+    <div class="bottomGlow"></div>
+    <div class="footerBar"><div class="t">THINK. FIGHT. SURVIVE.</div></div>
+  </div>
+</body>
+</html>
