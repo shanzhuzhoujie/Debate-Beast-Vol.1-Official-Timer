@@ -475,17 +475,23 @@
     state.remaining -= 1;
     const step = current();
 
-    if(step.mode === "free" && state.remaining >= 0){
-      state.freeRemaining -= 1;
-      if(state.freeRemaining <= 0){
-        state.freeRemaining = 0;
-      }
-    }
-
     if(state.remaining <= 0){
       state.remaining = 0;
       pause();
       beep(2);
+      updateTimeDisplay();
+      updateFreeDisplay();
+      return;
+    }
+
+    if(step.mode === "free"){
+      state.freeRemaining -= 1;
+      if(state.freeRemaining <= 0){
+        state.freeSide = state.freeSide === "pro" ? "con" : "pro";
+        state.freeRemaining = FREE_TURN_SECONDS;
+        renderPanels();
+        beep(1);
+      }
     }
 
     updateTimeDisplay();
