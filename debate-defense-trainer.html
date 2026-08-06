@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>山竹语言与答辩防守训练器</title>
+<style>
+:root{
+  --bg:#0b1220;
+  --panel:#141b2d;
+  --panel2:#1b2436;
+  --border:#26314a;
+  --text:#e6e9f0;
+  --muted:#8b93a7;
+  --accent:#2dd4bf;
+  --accent2:#f2b807;
+  --danger:#f87171;
+  --good:#4ade80;
+  --warn:#fbbf24;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.6;}
+.container{max-width:920px;margin:0 auto;padding:0 14px 60px;}
+header{padding:16px 4px 6px;text-align:center;}
+header h1{font-size:1.25rem;margin:0 0 4px;color:var(--accent2);letter-spacing:.5px;}
+header p{margin:0;color:var(--muted);font-size:.8rem;}
+nav.tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 18px;position:sticky;top:0;background:var(--bg);padding:10px 0 8px;z-index:10;border-bottom:1px solid var(--border);}
+nav.tabs button{flex:1 1 auto;min-width:78px;background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:9px 6px;border-radius:8px;font-size:.76rem;cursor:pointer;transition:.15s;}
+nav.tabs button.active{background:var(--accent);color:#08211c;border-color:var(--accent);font-weight:600;}
+.panel{display:none;}
+.panel.active{display:block;animation:fadein .2s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;}
+.card h2{margin:0 0 10px;font-size:1rem;color:var(--accent);}
+.card h3{margin:14px 0 8px;font-size:.9rem;color:var(--text);}
+.question-text{font-size:1.05rem;font-weight:600;margin-bottom:10px;color:#fff;}
+button{font-family:inherit;}
+.btn{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px 14px;border-radius:8px;font-size:.85rem;cursor:pointer;min-height:40px;}
+.btn:hover{border-color:var(--accent);}
+.btn.primary{background:var(--accent);color:#08211c;border-color:var(--accent);font-weight:600;}
+.btn.gold{background:var(--accent2);color:#221900;border-color:var(--accent2);font-weight:600;}
+.btn.danger{background:transparent;color:var(--danger);border-color:var(--danger);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+textarea, input[type=text]{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;font-size:.9rem;box-sizing:border-box;font-family:inherit;}
+textarea{min-height:90px;resize:vertical;}
+label.field-label{display:block;font-size:.78rem;color:var(--muted);margin:10px 0 4px;}
+.timer-display{text-align:center;padding:14px 0;}
+.timer-num{font-size:3rem;font-weight:700;color:var(--accent2);font-variant-numeric:tabular-nums;}
+.timer-phase{color:var(--muted);font-size:.85rem;margin-top:2px;}
+.stats-row{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--muted);margin:8px 0;}
+.stats-row b{color:var(--text);}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;margin:2px 4px 2px 0;background:var(--panel2);border:1px solid var(--border);}
+.tag.bad{color:var(--danger);border-color:var(--danger);}
+.tag.good{color:var(--good);border-color:var(--good);}
+.tag.warn{color:var(--warn);border-color:var(--warn);}
+.score-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border);flex-wrap:wrap;gap:6px;}
+.score-row:last-child{border-bottom:none;}
+.score-label{font-size:.85rem;}
+.score-buttons{display:flex;gap:6px;}
+.score-btn{width:34px;height:34px;border-radius:6px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);cursor:pointer;}
+.score-btn.active{background:var(--accent);color:#08211c;border-color:var(--accent);font-weight:700;}
+.score-total-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.score-total-num{font-size:1.6rem;font-weight:700;color:var(--accent2);}
+.grade-badge{padding:4px 10px;border-radius:20px;font-size:.78rem;font-weight:600;}
+.grade-0{background:rgba(248,113,113,.15);color:var(--danger);}
+.grade-1{background:rgba(251,191,36,.15);color:var(--warn);}
+.grade-2{background:rgba(45,212,191,.15);color:var(--accent);}
+.grade-3{background:rgba(74,222,128,.15);color:var(--good);}
+.record-card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:.82rem;}
+.record-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;}
+.record-top .meta{color:var(--muted);font-size:.75rem;}
+.record-q{font-weight:600;margin:4px 0;}
+.record-a{color:var(--muted);white-space:pre-wrap;margin:4px 0;max-height:100px;overflow:auto;}
+.record-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:.95rem;padding:0 4px;}
+.checklist label{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;margin:6px 0;}
+.qa-pair{border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--panel2);margin-bottom:8px;}
+.qa-pair .q{color:var(--accent2);font-size:.82rem;margin-bottom:4px;}
+.qa-pair .a{font-size:.85rem;white-space:pre-wrap;}
+.hint{font-size:.78rem;color:var(--muted);margin-top:4px;}
+.hidden{display:none !important;}
+select{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;font-size:.9rem;}
+.stat-mini{display:flex;flex-wrap:wrap;gap:10px;font-size:.75rem;color:var(--muted);margin-top:6px;}
+.divider{border-top:1px solid var(--border);margin:14px 0;}
+footer{text-align:center;color:var(--muted);font-size:.72rem;padding:20px 0 40px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>山竹语言与答辩防守训练器</h1>
+    <p>20秒短答 · 连续追问 · 语言压缩 · 危险措辞改写 · 防守评分 · 训练记录</p>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="m1" class="active">20秒短答</button>
+    <button data-tab="m2">追问防守</button>
+    <button data-tab="m3">语言压缩</button>
+    <button data-tab="m4">措辞改写</button>
+    <button data-tab="m5">防守评分</button>
+    <button data-tab="m6">训练记录</button>
+  </nav>
+
+  <!-- 模块一：20秒短答训练 -->
+  <section class="panel active" id="m1">
+    <div class="card">
+      <h2>一、20秒短答训练</h2>
+      <div class="question-text" id="m1Question"></div>
+      <div class="timer-display">
+        <div class="timer-num" id="m1TimerNum">05</div>
+        <div class="timer-phase" id="m1TimerPhase">准备开始</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="m1Start">开始</button>
+        <button class="btn" id="m1Pause">暂停</button>
+        <button class="btn" id="m1Reset">重置</button>
+        <button class="btn gold" id="m1Next">下一题</button>
+      </div>
+      <label class="field-label">你的回答（可随时输入或粘贴转写）</label>
+      <textarea id="m1Answer" placeholder="在这里输入你的回答……"></textarea>
+      <div class="stats-row">
+        <span>字数：<b id="m1Chars">0</b></span>
+        <span>句子数：<b id="m1Sentences">0</b></span>
+        <span>平均句长：<b id="m1AvgLen">0</b></span>
+      </div>
+      <div id="m1Detect"></div>
+
+      <div class="divider"></div>
+      <h3>防守评分（0–2 分 × 5 项）</h3>
+      <div id="m1Rubric"></div>
+      <div class="score-total-row">
+        <div>总分：<span class="score-total-num" id="m1Total">0</span> / 10</div>
+        <span class="grade-badge grade-0" id="m1Grade">防守失守</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="m1Save">保存到训练记录</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模块二：连续追问防守 -->
+  <section class="panel" id="m2">
+    <div class="card">
+      <h2>二、连续追问防守</h2>
+      <label class="field-label">选择一组追问</label>
+      <select id="m2ChainSelect"></select>
+      <label class="field-label">你的核心口径（本组回答需围绕这句话）</label>
+      <input type="text" id="m2CoreLine" list="coreLineOptions" placeholder="例如：独立执政能力弱，不等于组阁议价能力弱。">
+      <datalist id="coreLineOptions"></datalist>
+      <div class="btn-row">
+        <button class="btn primary" id="m2Start">开始追问</button>
+        <button class="btn" id="m2Restart">换一组 / 重新开始</button>
+      </div>
+      <div id="m2Questions"></div>
+      <div id="m2Analysis" class="hidden"></div>
+    </div>
+  </section>
+
+  <!-- 模块三：语言压缩训练 -->
+  <section class="panel" id="m3">
+    <div class="card">
+      <h2>三、语言压缩训练</h2>
+      <div class="question-text" id="m3Arg"></div>
+      <div class="btn-row">
+        <button class="btn" id="m3Next">换一个论点</button>
+      </div>
+
+      <label class="field-label">60秒版</label>
+      <textarea id="m3v60" data-len="60"></textarea>
+      <div class="stat-mini" id="m3s60"></div>
+
+      <label class="field-label">30秒版</label>
+      <textarea id="m3v30" data-len="30"></textarea>
+      <div class="stat-mini" id="m3s30"></div>
+
+      <label class="field-label">15秒版</label>
+      <textarea id="m3v15" data-len="15"></textarea>
+      <div class="stat-mini" id="m3s15"></div>
+
+      <label class="field-label">一句话版</label>
+      <textarea id="m3v1" data-len="one"></textarea>
+      <div class="stat-mini" id="m3s1"></div>
+
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button class="btn primary" id="m3Save">保存四个版本到训练记录</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模块四：危险措辞改写 -->
+  <section class="panel" id="m4">
+    <div class="card">
+      <h2>四、危险措辞改写</h2>
+      <div class="question-text" id="m4Phrase"></div>
+      <div class="btn-row">
+        <button class="btn" id="m4Next">下一条</button>
+        <button class="btn gold" id="m4Reveal">显示参考答案</button>
+      </div>
+      <div class="hint hidden" id="m4RefBox" style="margin-bottom:10px;"></div>
+
+      <label class="field-label">你的改写</label>
+      <textarea id="m4Rewrite" placeholder="把这句危险表达改写成更稳定的比赛表达……"></textarea>
+      <div class="btn-row">
+        <button class="btn primary" id="m4Check">检查我的改写</button>
+      </div>
+      <div id="m4Result"></div>
+      <div class="btn-row">
+        <button class="btn primary" id="m4Save">保存到训练记录</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模块五：防守评分 -->
+  <section class="panel" id="m5">
+    <div class="card">
+      <h2>五、防守评分</h2>
+      <label class="field-label">题目</label>
+      <input type="text" id="m5Question" list="questionOptions" placeholder="选择或输入一个攻击问题">
+      <datalist id="questionOptions"></datalist>
+
+      <label class="field-label">你的回答</label>
+      <textarea id="m5Answer"></textarea>
+
+      <label class="field-label">核心口径</label>
+      <input type="text" id="m5CoreLine" list="coreLineOptions2" placeholder="例如：表达权不等于超比例决策权。">
+      <datalist id="coreLineOptions2"></datalist>
+
+      <label class="field-label">备注</label>
+      <input type="text" id="m5Note" placeholder="选填">
+
+      <div class="divider"></div>
+      <div id="m5Rubric"></div>
+      <div class="score-total-row">
+        <div>总分：<span class="score-total-num" id="m5Total">0</span> / 10</div>
+        <span class="grade-badge grade-0" id="m5Grade">防守失守</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="m5Save">保存到训练记录</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模块六：训练记录 -->
+  <section class="panel" id="m6">
+    <div class="card">
+      <h2>六、训练记录</h2>
+      <div class="stats-row">
+        <span>最近7次平均分：<b id="m6Avg">—</b></span>
+      </div>
+      <div class="stat-mini" id="m6Phrases"></div>
+      <div class="btn-row">
+        <button class="btn" id="m6Export">导出 JSON</button>
+        <button class="btn danger" id="m6Clear">清空记录</button>
+      </div>
+      <div class="divider"></div>
+      <div id="m6List"></div>
+    </div>
+  </section>
+
+  <footer>数据仅保存在本设备浏览器中，不会上传到任何服务器。</footer>
+</div>
+
+<script>
+/* ---------- 内置数据 ---------- */
+const QUESTIONS = [
+  "小党既然弱，为什么还能影响政府？",
+  "所以你承认小党可以落实极端诉求？",
+  "更多人有话语权，不是当然更民主吗？",
+  "两党制让近半选民几年没有话语权，你接受吗？",
+  "你是不是在否定少数群体表达权？",
+  "两党内部也有不同派系，为什么比多党联盟更清晰？",
+  "两党为什么不会加剧政治极化？",
+  "没有现实成功案例，凭什么证明你的制度更好？",
+  "政府已经稳定执政三年，为什么还能说治理失败？",
+  "你说中间选民重要，为什么政党不会只在选前讨好？"
+];
+
+const CORE_LINES = [
+  "独立执政能力弱，不等于组阁议价能力弱。",
+  "表达权不等于超比例决策权。",
+  "败选不等于失去全部政治话语权。",
+  "政府存续稳定不等于问责清晰。",
+  "趋势描述事实，不直接证明制度优越。"
+];
+
+const SOFT_WORDS = ["怎么说呢","其实我觉得","看情况","或许","可能","我承认","我不知道","就是那个","然后然后","我证明不了","我没有案例"];
+const STANCE_PHRASES = ["我不接受这个前提","这里要区分","关键不在于","对方混淆了","我方结论是"];
+const DANGER_CHECK = ["我承认","我不知道","可能","或许","看情况","证明不了","没有案例"];
+
+const CHAINS = [
+  { topic:"小党影响力", core:CORE_LINES[0], questions:[
+    "小党既然弱，为什么还能影响政府？",
+    "所以你承认小党可以落实极端诉求？",
+    "那为什么还说小党是弱势的一方？",
+    "你是不是在否定少数群体表达权？",
+    "如果小党真的这么有影响力，为什么它自己组不了政府？"
+  ]},
+  { topic:"多党民主与话语权", core:CORE_LINES[1], questions:[
+    "更多人有话语权，不是当然更民主吗？",
+    "两党制让近半选民几年没有话语权，你接受吗？",
+    "你是不是在否定少数群体表达权？",
+    "那你要怎么保证多数人的意见不会被少数党绑架？"
+  ]},
+  { topic:"两党稳定与治理", core:CORE_LINES[3], questions:[
+    "两党内部也有不同派系，为什么比多党联盟更清晰？",
+    "两党为什么不会加剧政治极化？",
+    "没有现实成功案例，凭什么证明你的制度更好？",
+    "政府已经稳定执政三年，为什么还能说治理失败？"
+  ]},
+  { topic:"中间选民与趋势论证", core:CORE_LINES[4], questions:[
+    "你说中间选民重要，为什么政党不会只在选前讨好？",
+    "政府已经稳定执政三年，为什么还能说治理失败？",
+    "没有现实成功案例，凭什么证明你的制度更好？"
+  ]}
+];
+
+const DANGER_PHRASES = [
+  { bad:"我承认我没有案例。", ref:"这里的机制已经能够单独成立，案例只是补充说明，不是论证的必要条件。" },
+  { bad:"这个问题要看情况。", ref:"在双方共同设定的比较标准下，答案是明确的：我方立场成立。" },
+  { bad:"或许对方也有道理。", ref:"对方的说法忽略了机制上的关键差异，这一点不影响我方结论。" },
+  { bad:"我不知道怎么证明。", ref:"这一点可以从机制和后果两方面证明：第一……第二……" },
+  { bad:"这个我也说不清楚，可能两边都有点对。", ref:"这里的分界很清楚：在……标准下，我方结论成立，对方的说法不满足这个标准。" },
+  { bad:"就是那个，我们其实也没有完全排除这种可能。", ref:"我方的立场并不否认这种情况存在，但它不影响我方的结论，因为……" }
+];
+
+const LONG_ARGS = [
+  "小党虽然在国会中占据的席位数量有限，独立执政的能力也确实薄弱，但这并不意味着它们在政治过程中毫无份量。在多党制下，任何一个大党想要单独组成过半数的政府往往十分困难，这就使得它们必须寻求小党的合作才能顺利组阁。小党正是凭借这种组阁过程中的议价能力，把自己在选举中相对有限的支持转化为超出席位比例的政策影响力，这种影响力体现在内阁职位分配、政策清单谈判、甚至是否加入执政联盟这些关键节点上。换句话说，独立执政能力弱和组阁议价能力弱，根本是两个不同层面的问题，不能因为前者成立就直接推论后者也成立。",
+  "两党制常被批评为让将近一半选民在选后的几年里都处于没有话语权的状态，但这种说法混淆了表达权和决策权这两个概念。选民确实可以在竞选过程中、在媒体上、在民意调查里持续表达自己的立场，这是表达权，它并不会因为选举结果而立即消失。真正被选举结果改变的是决策权，也就是谁能够把政策方案直接变成法律和预算。把表达权等同于超比例的决策权，等于要求败选的一方在国会中依然拥有与胜选方相当甚至更高的实际影响力，这既不符合多数决的基本逻辑，也不是民主制度本身要保障的东西。"
+];
+
+const RUBRIC_CATS = [
+  { key:"conclusion", label:"结论前置" },
+  { key:"premise", label:"拆解前提" },
+  { key:"concept", label:"概念区分" },
+  { key:"mechanism", label:"机制解释" },
+  { key:"comparison", label:"回归比较" }
+];
+
+const OPPOSITE_PAIRS = [["接受","不接受"],["同意","不同意"],["是","不是"],["能","不能"],["会","不会"],["有","没有"],["可以","不可以"],["承认","不承认"],["对","不对"],["行","不行"]];
+const FUNC_CHARS = new Set("的是在和这那我你他她它了也就不都要会与及或个们说着过给对被把从到向跟同而且但如果因为所以然后".split(""));
+
+/* ---------- 通用工具函数 ---------- */
+function countChars(t){ return (t||"").replace(/\s/g,"").length; }
+function splitSentences(t){ return (t||"").split(/[。！？!?]+/).map(s=>s.trim()).filter(Boolean); }
+function sentenceStats(t){
+  const sentences = splitSentences(t);
+  const chars = countChars(t);
+  const avg = sentences.length ? Math.round(chars / sentences.length) : 0;
+  return { chars, sentences, avg };
+}
+function findSoftWords(t){ return SOFT_WORDS.filter(w => (t||"").includes(w)); }
+function findLongSentences(sentences, limit){ return sentences.filter(s => countChars(s) > limit); }
+function findRepeatedPhrases(t){
+  const clean = (t||"").replace(/[，。！？、；：""''（）()\s]/g,"");
+  const counts = {};
+  for(let len=2; len<=4; len++){
+    for(let i=0; i+len<=clean.length; i++){
+      const g = clean.substr(i,len);
+      counts[g] = (counts[g]||0) + 1;
+    }
+  }
+  return Object.entries(counts)
+    .filter(([g,c]) => c>=3 && !g.split("").every(ch=>FUNC_CHARS.has(ch)))
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,5)
+    .map(([g,c])=>g+"×"+c);
+}
+function pickRandomDifferent(len, last){
+  if(len<=1) return 0;
+  let idx;
+  do{ idx = Math.floor(Math.random()*len); } while(idx===last);
+  return idx;
+}
+function gradeOf(total){
+  if(total<=4) return {text:"防守失守", cls:"grade-0"};
+  if(total<=6) return {text:"勉强守住", cls:"grade-1"};
+  if(total<=8) return {text:"稳定防守", cls:"grade-2"};
+  return {text:"高质量反压", cls:"grade-3"};
+}
+function beep(freq, dur){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.frequency.value = freq || 880;
+    g.gain.value = 0.08;
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    setTimeout(()=>{ o.stop(); ctx.close(); }, dur||150);
+  }catch(e){}
+}
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ---------- 记录存储 ---------- */
+const REC_KEY = "sz_trainer_records";
+const PHRASE_KEY = "sz_trainer_phrases";
+function loadRecords(){ try{ return JSON.parse(localStorage.getItem(REC_KEY)||"[]"); }catch(e){ return []; } }
+function saveRecordsRaw(arr){ localStorage.setItem(REC_KEY, JSON.stringify(arr)); }
+function loadPhraseCounts(){ try{ return JSON.parse(localStorage.getItem(PHRASE_KEY)||"{}"); }catch(e){ return {}; } }
+function bumpPhraseCounts(text){
+  const counts = loadPhraseCounts();
+  SOFT_WORDS.forEach(w=>{ if((text||"").includes(w)) counts[w] = (counts[w]||0) + 1; });
+  localStorage.setItem(PHRASE_KEY, JSON.stringify(counts));
+}
+function addRecord(rec){
+  const arr = loadRecords();
+  rec.id = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  rec.date = new Date().toLocaleString("zh-CN", {hour12:false});
+  arr.unshift(rec);
+  saveRecordsRaw(arr);
+  if(rec.answer) bumpPhraseCounts(rec.answer);
+  renderRecords();
+  alert("已保存到训练记录。");
+}
+function deleteRecord(id){
+  const arr = loadRecords().filter(r=>r.id!==id);
+  saveRecordsRaw(arr);
+  renderRecords();
+}
+function clearRecords(){
+  if(confirm("确定清空全部训练记录？此操作不可恢复。")){
+    localStorage.removeItem(REC_KEY);
+    localStorage.removeItem(PHRASE_KEY);
+    renderRecords();
+  }
+}
+function exportRecords(){
+  const data = JSON.stringify(loadRecords(), null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "山竹训练记录_" + new Date().toISOString().slice(0,10) + ".json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+function renderRecords(){
+  const list = document.getElementById("m6List");
+  const records = loadRecords();
+  const recent = records.slice(0,20);
+  if(recent.length===0){
+    list.innerHTML = '<p class="hint">还没有训练记录。</p>';
+  }else{
+    list.innerHTML = recent.map(r => (
+      '<div class="record-card">' +
+        '<div class="record-top">' +
+          '<span class="tag">'+escapeHtml(r.module)+'</span>' +
+          '<span class="meta">'+escapeHtml(r.date)+'</span>' +
+          '<button class="record-del" data-del="'+r.id+'">✕</button>' +
+        '</div>' +
+        (r.question ? '<div class="record-q">'+escapeHtml(r.question)+'</div>' : "") +
+        (r.answer ? '<div class="record-a">'+escapeHtml(r.answer)+'</div>' : "") +
+        (r.coreLine ? '<div class="hint">核心口径：'+escapeHtml(r.coreLine)+'</div>' : "") +
+        '<div class="hint">得分：'+(typeof r.score==="number" ? r.score+" / 10" : "—")+(r.note ? " · 备注：" + escapeHtml(r.note) : "")+'</div>' +
+      '</div>'
+    )).join("");
+    list.querySelectorAll("[data-del]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{ if(confirm("删除这条记录？")) deleteRecord(btn.getAttribute("data-del")); });
+    });
+  }
+  const scored = records.filter(r=>typeof r.score==="number").slice(0,7);
+  const avgEl = document.getElementById("m6Avg");
+  if(scored.length===0){ avgEl.textContent = "—"; }
+  else{ avgEl.textContent = (scored.reduce((s,r)=>s+r.score,0)/scored.length).toFixed(1) + " / 10（" + scored.length + "次）"; }
+
+  const counts = loadPhraseCounts();
+  const top5 = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const phEl = document.getElementById("m6Phrases");
+  phEl.innerHTML = top5.length
+    ? "最常出现口头禅：" + top5.map(([w,c])=>'<span class="tag warn">'+escapeHtml(w)+' ×'+c+'</span>').join("")
+    : "最常出现口头禅：暂无数据";
+}
+
+/* ---------- 评分组件 ---------- */
+function buildRubricHtml(){
+  return RUBRIC_CATS.map(c => (
+    '<div class="score-row" data-cat="'+c.key+'">' +
+      '<span class="score-label">'+c.label+'</span>' +
+      '<div class="score-buttons">' +
+        [0,1,2].map(v=>'<button type="button" class="score-btn" data-val="'+v+'">'+v+'</button>').join("") +
+      '</div>' +
+    '</div>'
+  )).join("");
+}
+function wireRubric(rootEl, onChange){
+  rootEl.addEventListener("click", e=>{
+    const btn = e.target.closest(".score-btn");
+    if(!btn || !rootEl.contains(btn)) return;
+    const row = btn.closest(".score-row");
+    row.querySelectorAll(".score-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    onChange();
+  });
+}
+function getRubricTotal(rootEl){
+  let total = 0;
+  rootEl.querySelectorAll(".score-row").forEach(row=>{
+    const active = row.querySelector(".score-btn.active");
+    if(active) total += parseInt(active.getAttribute("data-val"),10);
+  });
+  return total;
+}
+function resetRubric(rootEl){
+  rootEl.querySelectorAll(".score-btn.active").forEach(b=>b.classList.remove("active"));
+}
+
+/* ---------- 标签切换 ---------- */
+document.querySelectorAll("nav.tabs button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.getAttribute("data-tab")).classList.add("active");
+    if(btn.getAttribute("data-tab")==="m6") renderRecords();
+  });
+});
+
+/* ==================== 模块一：20秒短答 ==================== */
+(function(){
+  const THINK_TIME = 5, ANSWER_TIME = 20;
+  let state = { idx:0, phase:"idle", thinkLeft:THINK_TIME, answerLeft:ANSWER_TIME, timerId:null };
+
+  const qEl = document.getElementById("m1Question");
+  const numEl = document.getElementById("m1TimerNum");
+  const phaseEl = document.getElementById("m1TimerPhase");
+  const answerEl = document.getElementById("m1Answer");
+  const detectEl = document.getElementById("m1Detect");
+  const rubricEl = document.getElementById("m1Rubric");
+  rubricEl.innerHTML = buildRubricHtml();
+  wireRubric(rubricEl, updateM1Score);
+
+  function loadQuestion(idx){
+    state.idx = idx;
+    qEl.textContent = QUESTIONS[idx];
+  }
+  loadQuestion(0);
+
+  function render(){
+    if(state.phase==="thinking"){ numEl.textContent = String(state.thinkLeft).padStart(2,"0"); phaseEl.textContent = "思考中"; }
+    else if(state.phase==="answering"){ numEl.textContent = String(state.answerLeft).padStart(2,"0"); phaseEl.textContent = "回答中"; }
+    else if(state.phase==="done"){ numEl.textContent = "00"; phaseEl.textContent = "已结束"; }
+    else{ numEl.textContent = String(THINK_TIME).padStart(2,"0"); phaseEl.textContent = "准备开始"; }
+  }
+
+  function tick(){
+    if(state.phase==="thinking"){
+      state.thinkLeft--;
+      if(state.thinkLeft<=0){ state.phase="answering"; state.answerLeft=ANSWER_TIME; beep(660,120); }
+    }else if(state.phase==="answering"){
+      state.answerLeft--;
+      if(state.answerLeft<=0){ state.phase="done"; clearInterval(state.timerId); state.timerId=null; beep(880,200); }
+    }
+    render();
+  }
+
+  document.getElementById("m1Start").addEventListener("click", ()=>{
+    if(state.timerId) return;
+    if(state.phase==="idle" || state.phase==="done"){ state.phase="thinking"; state.thinkLeft=THINK_TIME; state.answerLeft=ANSWER_TIME; }
+    state.timerId = setInterval(tick, 1000);
+    render();
+  });
+  document.getElementById("m1Pause").addEventListener("click", ()=>{
+    if(state.timerId){ clearInterval(state.timerId); state.timerId=null; }
+  });
+  document.getElementById("m1Reset").addEventListener("click", ()=>{
+    if(state.timerId){ clearInterval(state.timerId); state.timerId=null; }
+    state.phase="idle"; state.thinkLeft=THINK_TIME; state.answerLeft=ANSWER_TIME;
+    render();
+  });
+  document.getElementById("m1Next").addEventListener("click", ()=>{
+    if(state.timerId){ clearInterval(state.timerId); state.timerId=null; }
+    state.phase="idle"; state.thinkLeft=THINK_TIME; state.answerLeft=ANSWER_TIME;
+    loadQuestion(pickRandomDifferent(QUESTIONS.length, state.idx));
+    answerEl.value = "";
+    updateM1Detect();
+    resetRubric(rubricEl);
+    updateM1Score();
+    render();
+  });
+
+  function updateM1Detect(){
+    const text = answerEl.value;
+    const {chars, sentences, avg} = sentenceStats(text);
+    document.getElementById("m1Chars").textContent = chars;
+    document.getElementById("m1Sentences").textContent = sentences.length;
+    document.getElementById("m1AvgLen").textContent = avg;
+
+    const first = sentences[0] || "";
+    const stanceHit = STANCE_PHRASES.find(p => first.includes(p));
+    const soft = findSoftWords(text);
+
+    let html = "";
+    html += stanceHit
+      ? '<span class="tag good">✓ 首句立场明确（'+escapeHtml(stanceHit)+'）</span>'
+      : '<span class="tag bad">✗ 首句未见明确立场词</span>';
+    if(soft.length){
+      html += soft.map(w=>'<span class="tag warn">口头禅：'+escapeHtml(w)+'</span>').join("");
+    }else{
+      html += '<span class="tag good">未检测到软弱措辞</span>';
+    }
+    detectEl.innerHTML = html;
+  }
+  answerEl.addEventListener("input", updateM1Detect);
+  updateM1Detect();
+
+  function updateM1Score(){
+    const total = getRubricTotal(rubricEl);
+    document.getElementById("m1Total").textContent = total;
+    const g = gradeOf(total);
+    const badge = document.getElementById("m1Grade");
+    badge.textContent = g.text;
+    badge.className = "grade-badge " + g.cls;
+  }
+  updateM1Score();
+
+  document.getElementById("m1Save").addEventListener("click", ()=>{
+    if(!answerEl.value.trim()){ alert("请先输入回答再保存。"); return; }
+    addRecord({
+      module:"20秒短答",
+      question:QUESTIONS[state.idx],
+      answer:answerEl.value,
+      coreLine:"",
+      score:getRubricTotal(rubricEl),
+      note:findSoftWords(answerEl.value).join("、")
+    });
+  });
+
+  render();
+})();
+
+/* ==================== 模块二：连续追问防守 ==================== */
+(function(){
+  const chainSelect = document.getElementById("m2ChainSelect");
+  chainSelect.innerHTML = CHAINS.map((c,i)=>'<option value="'+i+'">'+escapeHtml(c.topic)+'（'+c.questions.length+'问）</option>').join("");
+
+  const coreLineList = document.getElementById("coreLineOptions");
+  coreLineList.innerHTML = CORE_LINES.map(c=>'<option value="'+escapeHtml(c)+'"></option>').join("");
+
+  let m2 = { chainIdx:0, coreLine:"", answers:[], idx:0 };
+  const qWrap = document.getElementById("m2Questions");
+  const analysisWrap = document.getElementById("m2Analysis");
+
+  function renderQuestionBlock(){
+    const chain = CHAINS[m2.chainIdx];
+    const i = m2.idx;
+    const block = document.createElement("div");
+    block.className = "qa-pair";
+    block.innerHTML =
+      '<div class="q">追问 '+(i+1)+' / '+chain.questions.length+'：'+escapeHtml(chain.questions[i])+'</div>' +
+      '<textarea id="m2A'+i+'" placeholder="回答这一问……"></textarea>' +
+      '<div class="btn-row"><button class="btn primary" data-submit="'+i+'">'+(i+1<chain.questions.length ? "提交并查看下一问" : "提交并查看整体分析")+'</button></div>';
+    qWrap.appendChild(block);
+    block.querySelector("[data-submit]").addEventListener("click", ()=>{
+      const ta = document.getElementById("m2A"+i);
+      if(!ta.value.trim()){ alert("请先回答这一问。"); return; }
+      m2.answers[i] = ta.value;
+      ta.disabled = true;
+      block.querySelector("[data-submit]").disabled = true;
+      m2.idx++;
+      if(m2.idx < chain.questions.length){ renderQuestionBlock(); }
+      else{ showAnalysis(); }
+    });
+  }
+
+  function checkCoreLinePresence(answer, coreLine){
+    const core = (coreLine||"").replace(/[，。！？、；：\s]/g,"");
+    if(core.length===0) return true;
+    const maxLen = Math.min(6, core.length);
+    for(let len=maxLen; len>=3; len--){
+      for(let i=0; i+len<=core.length; i++){
+        if(answer.includes(core.substr(i,len))) return true;
+      }
+    }
+    return false;
+  }
+  function detectContradictions(answers){
+    const flags = [];
+    for(let i=0;i<answers.length;i++){
+      for(let j=i+1;j<answers.length;j++){
+        OPPOSITE_PAIRS.forEach(([a,b])=>{
+          const iA=answers[i].includes(a), iB=answers[i].includes(b), jA=answers[j].includes(a), jB=answers[j].includes(b);
+          if((iA && jB && !iB) || (iB && jA && !iA)){
+            flags.push("第"+(i+1)+"句与第"+(j+1)+"句可能改口（关键词："+a+" / "+b+"）");
+          }
+        });
+      }
+    }
+    return flags;
+  }
+
+  function showAnalysis(){
+    const chain = CHAINS[m2.chainIdx];
+    const contradictions = detectContradictions(m2.answers);
+    const lostCore = m2.answers.map((a,i)=>checkCoreLinePresence(a, m2.coreLine) ? null : "第"+(i+1)+"句可能未回到核心口径").filter(Boolean);
+
+    let html = '<div class="divider"></div><h3>整体对照</h3>';
+    html += '<div class="hint">核心口径：'+escapeHtml(m2.coreLine)+'</div>';
+    html += chain.questions.map((q,i)=>(
+      '<div class="qa-pair"><div class="q">'+(i+1)+'. '+escapeHtml(q)+'</div><div class="a">'+escapeHtml(m2.answers[i])+'</div></div>'
+    )).join("");
+
+    html += '<h3>自动检测</h3>';
+    html += contradictions.length ? contradictions.map(f=>'<div><span class="tag bad">'+escapeHtml(f)+'</span></div>').join("") : '<div><span class="tag good">未检测到明显改口</span></div>';
+    html += lostCore.length ? lostCore.map(f=>'<div><span class="tag warn">'+escapeHtml(f)+'</span></div>').join("") : '<div><span class="tag good">各回答均可关联到核心口径</span></div>';
+
+    html += '<h3>人工自评</h3><div class="checklist">' +
+      '<label><input type="checkbox" id="m2c1"> 是否接受了对方的错误前提</label>' +
+      '<label><input type="checkbox" id="m2c2"> 是否出现前后矛盾</label>' +
+      '<label><input type="checkbox" id="m2c3"> 是否丢失核心口径</label>' +
+      '<label><input type="checkbox" id="m2c4"> 是否回答过长</label>' +
+      '<label><input type="checkbox" id="m2c5"> 是否完成反压</label>' +
+      '</div>';
+
+    html += '<div class="score-total-row"><div>自动估算得分：<span class="score-total-num" id="m2Total">10</span> / 10</div><span class="grade-badge grade-3" id="m2Grade">高质量反压</span></div>';
+    html += '<div class="btn-row"><button class="btn primary" id="m2Save">保存到训练记录</button></div>';
+
+    analysisWrap.innerHTML = html;
+    analysisWrap.classList.remove("hidden");
+
+    function recalc(){
+      let total = 10;
+      if(document.getElementById("m2c1").checked) total -= 2;
+      if(document.getElementById("m2c2").checked) total -= 2;
+      if(document.getElementById("m2c3").checked) total -= 2;
+      if(document.getElementById("m2c4").checked) total -= 2;
+      total = Math.max(0, total);
+      document.getElementById("m2Total").textContent = total;
+      const g = gradeOf(total);
+      const badge = document.getElementById("m2Grade");
+      badge.textContent = g.text;
+      badge.className = "grade-badge " + g.cls;
+      return total;
+    }
+    ["m2c1","m2c2","m2c3","m2c4","m2c5"].forEach(id=>document.getElementById(id).addEventListener("change", recalc));
+    recalc();
+
+    document.getElementById("m2Save").addEventListener("click", ()=>{
+      const total = recalc();
+      const combined = chain.questions.map((q,i)=>(i+1)+". "+q+"\n答："+m2.answers[i]).join("\n\n");
+      const pressed = document.getElementById("m2c5").checked ? "已完成反压" : "";
+      addRecord({
+        module:"连续追问防守",
+        question:chain.topic,
+        answer:combined,
+        coreLine:m2.coreLine,
+        score:total,
+        note:pressed
+      });
+    });
+  }
+
+  function startChain(){
+    m2 = { chainIdx: parseInt(chainSelect.value,10), coreLine: document.getElementById("m2CoreLine").value.trim(), answers:[], idx:0 };
+    if(!m2.coreLine){ alert("请先填写核心口径。"); return; }
+    qWrap.innerHTML = "";
+    analysisWrap.classList.add("hidden");
+    analysisWrap.innerHTML = "";
+    renderQuestionBlock();
+  }
+  document.getElementById("m2Start").addEventListener("click", startChain);
+  document.getElementById("m2Restart").addEventListener("click", ()=>{
+    qWrap.innerHTML = "";
+    analysisWrap.classList.add("hidden");
+    analysisWrap.innerHTML = "";
+  });
+})();
+
+/* ==================== 模块三：语言压缩训练 ==================== */
+(function(){
+  let idx = 0;
+  const argEl = document.getElementById("m3Arg");
+  function load(i){ idx = i; argEl.textContent = LONG_ARGS[i]; }
+  load(0);
+  document.getElementById("m3Next").addEventListener("click", ()=> load(pickRandomDifferent(LONG_ARGS.length, idx)));
+
+  const versions = [
+    {ta:"m3v60", stat:"m3s60", limit:200},
+    {ta:"m3v30", stat:"m3s30", limit:110},
+    {ta:"m3v15", stat:"m3s15", limit:60},
+    {ta:"m3v1", stat:"m3s1", limit:45}
+  ];
+
+  function analyzeVersion(v){
+    const ta = document.getElementById(v.ta);
+    const text = ta.value;
+    const {chars, sentences, avg} = sentenceStats(text);
+    const longSentences = findLongSentences(sentences, 45);
+    const soft = findSoftWords(text);
+    const repeated = findRepeatedPhrases(text);
+
+    let html = "字数 "+chars+" · 句子 "+sentences.length+" · 平均句长 "+avg;
+    if(chars > v.limit) html += ' <span class="tag warn">超出建议长度（建议≤'+v.limit+'字）</span>';
+    if(longSentences.length) html += ' <span class="tag bad">存在超45字长句×'+longSentences.length+'</span>';
+    if(soft.length) html += soft.map(w=>' <span class="tag warn">口头禅：'+escapeHtml(w)+'</span>').join("");
+    if(repeated.length) html += ' <span class="tag warn">重复：'+repeated.map(escapeHtml).join("、")+'</span>';
+    document.getElementById(v.stat).innerHTML = html;
+  }
+
+  versions.forEach(v=>{
+    document.getElementById(v.ta).addEventListener("input", ()=>analyzeVersion(v));
+    analyzeVersion(v);
+  });
+
+  document.getElementById("m3Save").addEventListener("click", ()=>{
+    const combined = versions.map(v=>{
+      const label = {m3v60:"60秒版", m3v30:"30秒版", m3v15:"15秒版", m3v1:"一句话版"}[v.ta];
+      return label + "：" + document.getElementById(v.ta).value;
+    }).join("\n\n");
+    if(versions.every(v=>!document.getElementById(v.ta).value.trim())){ alert("请至少填写一个版本再保存。"); return; }
+    addRecord({
+      module:"语言压缩训练",
+      question:LONG_ARGS[idx],
+      answer:combined,
+      coreLine:"",
+      score:null,
+      note:""
+    });
+  });
+})();
+
+/* ==================== 模块四：危险措辞改写 ==================== */
+(function(){
+  let idx = 0;
+  const phraseEl = document.getElementById("m4Phrase");
+  const refBox = document.getElementById("m4RefBox");
+  const rewriteEl = document.getElementById("m4Rewrite");
+  const resultEl = document.getElementById("m4Result");
+  const revealBtn = document.getElementById("m4Reveal");
+
+  function load(i){
+    idx = i;
+    phraseEl.textContent = DANGER_PHRASES[i].bad;
+    refBox.classList.add("hidden");
+    refBox.textContent = "";
+    revealBtn.textContent = "显示参考答案";
+    rewriteEl.value = "";
+    resultEl.innerHTML = "";
+  }
+  load(0);
+  document.getElementById("m4Next").addEventListener("click", ()=> load(pickRandomDifferent(DANGER_PHRASES.length, idx)));
+
+  revealBtn.addEventListener("click", ()=>{
+    const showing = !refBox.classList.contains("hidden");
+    if(showing){ refBox.classList.add("hidden"); revealBtn.textContent = "显示参考答案"; }
+    else{ refBox.textContent = "参考：" + DANGER_PHRASES[idx].ref; refBox.classList.remove("hidden"); revealBtn.textContent = "隐藏参考答案"; }
+  });
+
+  function check(){
+    const text = rewriteEl.value;
+    const found = DANGER_CHECK.filter(w=>text.includes(w));
+    let html = "";
+    if(!text.trim()){ html = '<span class="tag warn">请先输入改写内容</span>'; }
+    else if(found.length===0){ html = '<span class="tag good">✓ 已清除危险措辞</span>'; }
+    else{ html = found.map(w=>'<span class="tag bad">仍包含：'+escapeHtml(w)+'</span>').join(""); }
+    resultEl.innerHTML = html;
+    return found;
+  }
+  document.getElementById("m4Check").addEventListener("click", check);
+
+  document.getElementById("m4Save").addEventListener("click", ()=>{
+    if(!rewriteEl.value.trim()){ alert("请先输入改写内容。"); return; }
+    const found = check();
+    const score = Math.max(0, 10 - found.length*2);
+    addRecord({
+      module:"危险措辞改写",
+      question:DANGER_PHRASES[idx].bad,
+      answer:rewriteEl.value,
+      coreLine:"",
+      score:score,
+      note:found.length ? "仍含："+found.join("、") : "已清除危险措辞"
+    });
+  });
+})();
+
+/* ==================== 模块五：防守评分 ==================== */
+(function(){
+  document.getElementById("questionOptions").innerHTML = QUESTIONS.map(q=>'<option value="'+escapeHtml(q)+'"></option>').join("");
+  document.getElementById("coreLineOptions2").innerHTML = CORE_LINES.map(c=>'<option value="'+escapeHtml(c)+'"></option>').join("");
+
+  const rubricEl = document.getElementById("m5Rubric");
+  rubricEl.innerHTML = buildRubricHtml();
+  wireRubric(rubricEl, updateScore);
+
+  function updateScore(){
+    const total = getRubricTotal(rubricEl);
+    document.getElementById("m5Total").textContent = total;
+    const g = gradeOf(total);
+    const badge = document.getElementById("m5Grade");
+    badge.textContent = g.text;
+    badge.className = "grade-badge " + g.cls;
+  }
+  updateScore();
+
+  document.getElementById("m5Save").addEventListener("click", ()=>{
+    const question = document.getElementById("m5Question").value.trim();
+    const answer = document.getElementById("m5Answer").value.trim();
+    if(!question || !answer){ alert("请先填写题目和回答。"); return; }
+    addRecord({
+      module:"防守评分",
+      question:question,
+      answer:answer,
+      coreLine:document.getElementById("m5CoreLine").value.trim(),
+      score:getRubricTotal(rubricEl),
+      note:document.getElementById("m5Note").value.trim()
+    });
+    document.getElementById("m5Question").value = "";
+    document.getElementById("m5Answer").value = "";
+    document.getElementById("m5CoreLine").value = "";
+    document.getElementById("m5Note").value = "";
+    resetRubric(rubricEl);
+    updateScore();
+  });
+})();
+
+/* ==================== 模块六：训练记录 ==================== */
+document.getElementById("m6Export").addEventListener("click", exportRecords);
+document.getElementById("m6Clear").addEventListener("click", clearRecords);
+renderRecords();
+</script>
+</body>
+</html>
