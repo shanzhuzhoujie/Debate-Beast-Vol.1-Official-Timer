@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Debate Beast · 一对一计时器</title>
+<style>
+  :root{
+    --pro: #4da6ff;
+    --pro-glow: rgba(77,166,255,0.85);
+    --con: #ff5b5b;
+    --con-glow: rgba(255,91,91,0.85);
+    --gold: #f7d7a1;
+    --bg-a: #050505;
+    --bg-b: #240a0a;
+  }
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body{
+    margin:0; padding:0; height:100%;
+    background: radial-gradient(circle at top left, rgba(122,31,22,0.40), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(88,55,140,0.30), transparent 38%),
+                linear-gradient(135deg, var(--bg-a), var(--bg-b));
+    color:#fff;
+    font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",Arial,sans-serif;
+    overflow-x:hidden;
+  }
+  .wrap{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding: 14px 14px calc(96px + env(safe-area-inset-bottom)) 14px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ---------- 顶部标题 & 进度 ---------- */
+  header{ text-align:center; margin-bottom:10px; }
+  h1{
+    margin:6px 0 2px 0;
+    font-size: clamp(18px, 3.2vw, 28px);
+    font-weight:900;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.9), 0 0 18px rgba(255,70,50,0.9);
+  }
+  .subtitle{
+    font-size: clamp(11px, 1.6vw, 14px);
+    color: var(--gold);
+    font-weight:700;
+    text-shadow: 0 0 10px rgba(255,180,80,0.8);
+  }
+
+  .timeline{
+    display:flex;
+    gap:4px;
+    overflow-x:auto;
+    padding: 12px 2px 6px 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .timeline::-webkit-scrollbar{ height:5px; }
+  .timeline::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.2); border-radius:4px; }
+
+  .step-chip{
+    flex: 0 0 auto;
+    min-width: 78px;
+    text-align:center;
+    padding: 6px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    cursor:pointer;
+    font-size: 11px;
+    font-weight:700;
+    color: rgba(255,255,255,0.45);
+    transition: all .2s ease;
+    user-select:none;
+  }
+  .step-chip .n{ font-size:10px; opacity:.7; display:block; margin-bottom:2px; }
+  .step-chip.done{ color: rgba(255,255,255,0.35); border-color: rgba(120,255,150,0.25); }
+  .step-chip.done::after{ content:" ✓"; }
+  .step-chip.active{
+    color:#fff;
+    background: linear-gradient(135deg, rgba(255,90,60,0.35), rgba(255,180,80,0.20));
+    border-color: rgba(255,170,90,0.85);
+    box-shadow: 0 0 14px rgba(255,120,50,0.55);
+    transform: scale(1.05);
+  }
+
+  /* ---------- 主舞台 ---------- */
+  .stage{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 10px 4px;
+    min-height: 46vh;
+  }
+  .phase-name{
+    font-size: clamp(22px, 5.5vw, 40px);
+    font-weight:900;
+    text-shadow: 0 0 12px rgba(255,255,255,0.95), 0 0 22px rgba(255,80,40,0.9);
+    margin-bottom:6px;
+  }
+  .phase-desc{
+    max-width: 640px;
+    font-size: clamp(12px, 2vw, 14px);
+    color: rgba(255,255,255,0.65);
+    line-height:1.5;
+    margin-bottom: 18px;
+  }
+
+  .panels{
+    display:flex;
+    gap: clamp(10px, 4vw, 40px);
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    flex-wrap: wrap;
+  }
+  .panel{
+    width: min(42vw, 320px);
+    padding: 14px 8px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.03);
+    transition: all .25s ease;
+  }
+  .panel.side-pro{ --c: var(--pro); --g: var(--pro-glow); }
+  .panel.side-con{ --c: var(--con); --g: var(--con-glow); }
+  .panel.active{
+    border-color: var(--c);
+    background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--c) 18%, transparent), transparent 70%);
+    box-shadow: 0 0 30px color-mix(in srgb, var(--c) 35%, transparent);
+  }
+  .panel .side-name{
+    font-size: clamp(18px, 3.6vw, 26px);
+    font-weight:900;
+    margin-bottom: 6px;
+  }
+  .panel.active .side-name{ color:#fff; text-shadow: 0 0 12px var(--g), 0 0 24px var(--g); }
+  .panel:not(.active) .side-name{ color: rgba(255,255,255,0.20); }
+  .status{
+    font-size: clamp(11px, 1.8vw, 14px);
+    font-weight:900;
+    letter-spacing: 0.08em;
+    font-family: "Times New Roman", serif;
+  }
+  .panel.active .status{ color: var(--c); text-shadow: 0 0 10px var(--g); }
+  .panel:not(.active) .status{ color: rgba(255,255,255,0.14); }
+  .role-tag{
+    display:inline-block;
+    margin-top:4px;
+    font-size: 10px;
+    font-weight:700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.55);
+  }
+
+  .none-panel{
+    font-size: clamp(14px, 2.4vw, 18px);
+    color: rgba(255,255,255,0.55);
+    font-weight:700;
+    letter-spacing: 0.05em;
+  }
+
+  .time{
+    margin-top: 18px;
+    font-size: clamp(56px, 15vw, 130px);
+    font-weight:900;
+    line-height:0.9;
+    font-family: "Times New Roman", serif;
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 18px rgba(255,255,255,1), 0 0 40px rgba(255,80,40,0.85), 0 0 60px rgba(255,80,40,0.5);
+    transition: color .2s ease;
+  }
+  .time.warn{ color:#ffcf74; }
+  .time.danger{ color: var(--con); text-shadow: 0 0 18px rgba(255,255,255,1), 0 0 40px rgba(255,60,60,0.95), 0 0 70px rgba(255,60,60,0.7); }
+  .time.done{ animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+  /* ---------- 自由辩论 子计时（本赛制未使用，保留以兼容同一套 UI） ---------- */
+  .free-box{
+    margin-top: 14px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .free-sub{
+    font-size: clamp(28px, 6vw, 44px);
+    font-weight:900;
+    font-family: "Times New Roman", serif;
+    color: var(--gold);
+    text-shadow: 0 0 14px rgba(255,180,80,0.9);
+  }
+  .free-sub.zero{ color: var(--con); text-shadow: 0 0 16px rgba(255,60,60,1); animation: pulse .6s ease-in-out infinite; }
+  .free-label{ font-size:11px; color: rgba(255,255,255,0.5); font-weight:700; letter-spacing:0.08em; }
+  .free-switch{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  }
+  .free-switch button{
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight:800;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    color:#fff;
+    cursor:pointer;
+  }
+  .free-switch button.pro{ border-color: var(--pro); }
+  .free-switch button.pro.on{ background: color-mix(in srgb, var(--pro) 30%, transparent); box-shadow: 0 0 14px var(--pro-glow); }
+  .free-switch button.con{ border-color: var(--con); }
+  .free-switch button.con.on{ background: color-mix(in srgb, var(--con) 30%, transparent); box-shadow: 0 0 14px var(--con-glow); }
+
+  /* ---------- 底部控制栏 ---------- */
+  .controls{
+    position: fixed;
+    left:0; right:0; bottom:0;
+    background: rgba(5,5,5,0.96);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) 10px;
+    display:flex;
+    gap:8px;
+    flex-wrap: wrap;
+    justify-content:center;
+    z-index: 999;
+  }
+  .controls button{
+    flex: 1 1 90px;
+    max-width: 160px;
+    padding: 12px 8px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight:800;
+    cursor:pointer;
+    color:#fff;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    transition: transform .1s ease, background .2s ease;
+  }
+  .controls button:active{ transform: scale(0.96); }
+  #btnStart{ background: linear-gradient(135deg,#2fae6b,#1c7a49); border-color: transparent; }
+  #btnPause{ background: linear-gradient(135deg,#c98a2c,#8f5f14); border-color: transparent; }
+  #btnPrev, #btnNext{ background: rgba(255,255,255,0.06); }
+  #btnResetStep{ background: rgba(255,255,255,0.06); }
+  #btnRestartAll{ background: linear-gradient(135deg,#7a1f16,#4a0f0a); border-color: transparent; }
+  #btnMute{ background: rgba(255,255,255,0.06); flex: 0 0 52px; }
+
+  @media (max-width: 480px){
+    .controls button{ font-size: 12px; padding: 10px 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Debate Beast · 一对一赛制计时器</h1>
+    <div class="subtitle" id="progressLabel">环节 1 / 14</div>
+  </header>
+
+  <div class="timeline" id="timeline"></div>
+
+  <div class="stage">
+    <div class="phase-name" id="phaseName">正方立论</div>
+    <div class="phase-desc" id="phaseDesc">正方就辩题阐述己方核心论点，搭建论证框架。</div>
+
+    <div class="panels" id="panels"></div>
+
+    <div class="time" id="timeDisplay">01:40</div>
+
+    <div class="free-box" id="freeBox" style="display:none;">
+      <div class="free-label">单次发言限时 · 超时5秒未接则对方继续</div>
+      <div class="free-sub" id="freeSub">25</div>
+      <div class="free-switch">
+        <button class="pro" id="freeProBtn">正方发言</button>
+        <button class="con" id="freeConBtn">反方发言</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="btnStart">▶ 开始</button>
+  <button id="btnPause">⏸ 暂停</button>
+  <button id="btnPrev">⏮ 上一环节</button>
+  <button id="btnNext">⏭ 下一环节</button>
+  <button id="btnResetStep">↺ 重置本环节</button>
+  <button id="btnRestartAll">⟲ 回到开始</button>
+  <button id="btnMute" title="测试提示音">🔔</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // 一对一赛制：原表以三辩制（一辩/二辩/三辩）为基础，总时长 38 分钟。
+  // 因为每方只有一位辩手，去掉辩位编号，只保留正方/反方；
+  // 并按约 20 分钟/场的目标等比例压缩原时长（约 ×5/9，不强求整数分钟）。
+  const SCHEDULE = [
+    { phase:"正方立论", desc:"正方就辩题阐述己方核心论点，搭建论证框架。", duration:100, mode:"single", side:"pro" },
+    { phase:"反方立论", desc:"反方就辩题阐述己方核心论点，搭建论证框架。", duration:100, mode:"single", side:"con" },
+
+    { phase:"反方质询正方", desc:"反方质询正方，质询方可随时打断作答；正方仅可回答问题，不得反问或申论。", duration:65, mode:"cross", asker:"con", answerer:"pro" },
+    { phase:"正方质询反方", desc:"正方质询反方，质询方可随时打断作答；反方仅可回答问题，不得反问或申论。", duration:65, mode:"cross", asker:"pro", answerer:"con" },
+
+    { phase:"反方申论", desc:"反方针对正方立论及质询内容进行申论。", duration:100, mode:"single", side:"con" },
+    { phase:"正方申论", desc:"正方针对反方立论及质询内容进行申论。", duration:100, mode:"single", side:"pro" },
+    { phase:"正方对辩", desc:"对辩由正方开始，双方就申论内容正面交锋。", duration:65, mode:"single", side:"pro" },
+    { phase:"反方对辩", desc:"反方回应对辩，正面反驳正方观点。", duration:65, mode:"single", side:"con" },
+
+    { phase:"正方申论", desc:"正方针对对辩交锋进行补充申论。", duration:65, mode:"single", side:"pro" },
+    { phase:"反方申论", desc:"反方针对对辩交锋进行补充申论。", duration:65, mode:"single", side:"con" },
+
+    { phase:"自由辩论", desc:"自由辩论由正方开始，双方就全场交锋展开攻防。", duration:100, mode:"single", side:"pro" },
+    { phase:"自由辩论", desc:"反方展开攻防，回应正方论点。", duration:100, mode:"single", side:"con" },
+
+    { phase:"反方结辩", desc:"反方进行总结陈词。", duration:100, mode:"single", side:"con" },
+    { phase:"正方结辩", desc:"正方进行总结陈词。", duration:100, mode:"single", side:"pro" },
+  ];
+
+  const FREE_TURN_SECONDS = 25;
+
+  const els = {
+    progressLabel: document.getElementById("progressLabel"),
+    timeline: document.getElementById("timeline"),
+    phaseName: document.getElementById("phaseName"),
+    phaseDesc: document.getElementById("phaseDesc"),
+    panels: document.getElementById("panels"),
+    timeDisplay: document.getElementById("timeDisplay"),
+    freeBox: document.getElementById("freeBox"),
+    freeSub: document.getElementById("freeSub"),
+    freeProBtn: document.getElementById("freeProBtn"),
+    freeConBtn: document.getElementById("freeConBtn"),
+    btnStart: document.getElementById("btnStart"),
+    btnPause: document.getElementById("btnPause"),
+    btnPrev: document.getElementById("btnPrev"),
+    btnNext: document.getElementById("btnNext"),
+    btnResetStep: document.getElementById("btnResetStep"),
+    btnRestartAll: document.getElementById("btnRestartAll"),
+    btnMute: document.getElementById("btnMute"),
+  };
+
+  let state = {
+    index: 0,
+    remaining: SCHEDULE[0].duration,
+    running: false,
+    freeSide: "pro",
+    freeRemaining: FREE_TURN_SECONDS,
+    completedUpTo: -1,
+  };
+
+  let tickHandle = null;
+
+  // ---------- 音效：Web Audio 提示音 ----------
+  let audioCtx = null;
+  function beep(times){
+    times = times || 1;
+    try{
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      for(let i=0;i<times;i++){
+        const start = audioCtx.currentTime + i*0.35;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(1050, start);
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.35, start + 0.02);
+        gain.gain.linearRampToValueAtTime(0, start + 0.5);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(start);
+        osc.stop(start + 0.55);
+      }
+    }catch(e){ /* 静默失败：部分浏览器需要用户先交互才能播放 */ }
+  }
+
+  function fmt(sec){
+    sec = Math.max(0, Math.round(sec));
+    const m = Math.floor(sec/60);
+    const s = sec % 60;
+    return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+  }
+
+  function current(){ return SCHEDULE[state.index]; }
+
+  function renderTimeline(){
+    els.timeline.innerHTML = "";
+    SCHEDULE.forEach((step, i) => {
+      const chip = document.createElement("div");
+      chip.className = "step-chip" + (i === state.index ? " active" : "") + (i < state.index ? " done" : "");
+      chip.innerHTML = `<span class="n">${i+1}</span>${step.phase}`;
+      chip.addEventListener("click", () => jumpTo(i));
+      els.timeline.appendChild(chip);
+    });
+  }
+
+  function renderPanels(){
+    const step = current();
+    els.panels.innerHTML = "";
+    els.freeBox.style.display = "none";
+
+    if(step.mode === "single"){
+      const proActive = step.side === "pro";
+      els.panels.appendChild(makePanel("正方","pro", proActive, proActive ? "SPEAKING" : "WAITING"));
+      els.panels.appendChild(makePanel("反方","con", !proActive, !proActive ? "SPEAKING" : "WAITING"));
+    } else if(step.mode === "cross"){
+      const askerIsPro = step.asker === "pro";
+      const pro = makePanel("正方","pro", true, askerIsPro ? "质询方 · ASKING" : "答辩方 · ANSWERING");
+      const con = makePanel("反方","con", true, askerIsPro ? "答辩方 · ANSWERING" : "质询方 · ASKING");
+      els.panels.appendChild(pro);
+      els.panels.appendChild(con);
+    } else if(step.mode === "free"){
+      const proActive = state.freeSide === "pro";
+      els.panels.appendChild(makePanel("正方","pro", proActive, proActive ? "SPEAKING" : "WAITING"));
+      els.panels.appendChild(makePanel("反方","con", !proActive, !proActive ? "SPEAKING" : "WAITING"));
+      els.freeBox.style.display = "flex";
+    } else {
+      const div = document.createElement("div");
+      div.className = "none-panel";
+      div.textContent = step.phase === "单场结束" ? "本场比赛计时结束" : "双方暂停发言";
+      els.panels.appendChild(div);
+    }
+  }
+
+  function makePanel(name, side, active, statusText){
+    const div = document.createElement("div");
+    div.className = "panel side-" + side + (active ? " active" : "");
+    div.innerHTML = `<div class="side-name">${name}</div><div class="status">${statusText}</div>`;
+    return div;
+  }
+
+  function renderAll(){
+    const step = current();
+    els.progressLabel.textContent = `环节 ${state.index+1} / ${SCHEDULE.length}`;
+    els.phaseName.textContent = step.phase;
+    els.phaseDesc.textContent = step.desc;
+    renderTimeline();
+    renderPanels();
+    updateTimeDisplay();
+    updateFreeDisplay();
+  }
+
+  function updateTimeDisplay(){
+    els.timeDisplay.textContent = fmt(state.remaining);
+    els.timeDisplay.classList.toggle("warn", state.remaining <= 30 && state.remaining > 10);
+    els.timeDisplay.classList.toggle("danger", state.remaining <= 10 && state.remaining > 0);
+    els.timeDisplay.classList.toggle("done", state.remaining <= 0);
+  }
+
+  function updateFreeDisplay(){
+    const step = current();
+    if(step.mode !== "free") return;
+    els.freeSub.textContent = state.freeRemaining;
+    els.freeSub.classList.toggle("zero", state.freeRemaining <= 0);
+    els.freeProBtn.classList.toggle("on", state.freeSide === "pro");
+    els.freeConBtn.classList.toggle("on", state.freeSide === "con");
+  }
+
+  function setFreeSide(side){
+    if(state.freeSide === side) return;
+    state.freeSide = side;
+    state.freeRemaining = FREE_TURN_SECONDS;
+    renderPanels();
+    updateFreeDisplay();
+  }
+
+  function start(){
+    if(state.running || state.remaining <= 0) return;
+    if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    state.running = true;
+    tickHandle = setInterval(tick, 1000);
+  }
+
+  function pause(){
+    state.running = false;
+    if(tickHandle){ clearInterval(tickHandle); tickHandle = null; }
+  }
+
+  function tick(){
+    state.remaining -= 1;
+    const step = current();
+
+    if(state.remaining <= 0){
+      state.remaining = 0;
+      pause();
+      beep(2);
+      updateTimeDisplay();
+      updateFreeDisplay();
+      return;
+    }
+
+    if(step.mode === "free"){
+      state.freeRemaining -= 1;
+      if(state.freeRemaining <= 0){
+        state.freeSide = state.freeSide === "pro" ? "con" : "pro";
+        state.freeRemaining = FREE_TURN_SECONDS;
+        renderPanels();
+        beep(1);
+      }
+    }
+
+    updateTimeDisplay();
+    updateFreeDisplay();
+  }
+
+  function resetStep(){
+    pause();
+    state.remaining = current().duration;
+    if(current().mode === "free"){
+      state.freeSide = "pro";
+      state.freeRemaining = FREE_TURN_SECONDS;
+    }
+    renderAll();
+  }
+
+  function goto(i){
+    pause();
+    state.index = Math.max(0, Math.min(SCHEDULE.length - 1, i));
+    state.remaining = SCHEDULE[state.index].duration;
+    if(SCHEDULE[state.index].mode === "free"){
+      state.freeSide = "pro";
+      state.freeRemaining = FREE_TURN_SECONDS;
+    }
+    renderAll();
+  }
+
+  function jumpTo(i){ goto(i); }
+  function next(){ if(state.index < SCHEDULE.length - 1) goto(state.index + 1); }
+  function prev(){ if(state.index > 0) goto(state.index - 1); }
+  function restartAll(){ goto(0); }
+
+  els.btnStart.addEventListener("click", start);
+  els.btnPause.addEventListener("click", pause);
+  els.btnPrev.addEventListener("click", prev);
+  els.btnNext.addEventListener("click", next);
+  els.btnResetStep.addEventListener("click", resetStep);
+  els.btnRestartAll.addEventListener("click", restartAll);
+  els.btnMute.addEventListener("click", () => beep(1));
+  els.freeProBtn.addEventListener("click", () => setFreeSide("pro"));
+  els.freeConBtn.addEventListener("click", () => setFreeSide("con"));
+
+  document.addEventListener("keydown", (e) => {
+    if(e.code === "Space"){ e.preventDefault(); state.running ? pause() : start(); }
+    else if(e.code === "ArrowRight"){ next(); }
+    else if(e.code === "ArrowLeft"){ prev(); }
+    else if(e.code === "KeyR"){ resetStep(); }
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
