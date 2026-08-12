@@ -6,19 +6,19 @@
 <title>山竹攻辩训练器</title>
 <style>
   :root{
-    --bg:#0b1220;
-    --bg-alt:#101a2c;
-    --card:#16233a;
-    --card-hi:#1c2c47;
-    --border:#26374f;
-    --text:#e8edf5;
-    --text-dim:#93a4bf;
-    --accent:#2dd4bf;
-    --accent-dim:#1a4f49;
-    --gold:#f2c14e;
-    --danger:#ef5b5b;
-    --danger-dim:#4a2530;
-    --good:#4ade80;
+    --bg:#1c0a10;
+    --bg-alt:#260f18;
+    --card:#33141f;
+    --card-hi:#40182a;
+    --border:#5c2c3a;
+    --text:#f7efe6;
+    --text-dim:#c8a2aa;
+    --accent:#d9b24c;
+    --accent-dim:#3d2e14;
+    --gold:#d9b24c;
+    --danger:#e2544a;
+    --danger-dim:#3f1720;
+    --good:#d9b24c;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -141,9 +141,10 @@
     border-color:var(--border);
   }
   button.btn.gold{
-    background:#3a2f13;
-    color:var(--gold);
+    background:var(--gold);
+    color:var(--bg);
     border-color:var(--gold);
+    font-weight:700;
   }
   button.btn.danger{
     background:var(--danger-dim);
@@ -224,7 +225,7 @@
     color:var(--danger);
     border:1px solid var(--danger);
   }
-  .tag.ok{background:#123324;color:var(--good);border-color:var(--good);}
+  .tag.ok{background:var(--accent-dim);color:var(--good);border-color:var(--good);}
   .qa-block{
     background:var(--bg-alt);
     border:1px solid var(--border);
