@@ -250,6 +250,7 @@ footer{text-align:center;color:var(--muted);font-size:.72rem;padding:20px 0 40px
       </div>
       <div class="stat-mini" id="m6Phrases"></div>
       <div class="btn-row">
+        <button class="btn gold" id="m6ExportText">导出文字版（发给AI评分）</button>
         <button class="btn" id="m6Export">导出 JSON</button>
         <button class="btn danger" id="m6Clear">清空记录</button>
       </div>
@@ -434,6 +435,37 @@ function exportRecords(){
   const a = document.createElement("a");
   a.href = url;
   a.download = "山竹训练记录_" + new Date().toISOString().slice(0,10) + ".json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+function buildAiExportText(){
+  const records = loadRecords();
+  if(records.length===0) return "";
+  const header =
+    "以下是我的辩论答辩防守训练记录，请你按照这五项标准（每项0-2分，共10分）为每条记录评分，并给出具体修改建议：\n" +
+    "1. 结论前置　2. 拆解前提　3. 概念区分　4. 机制解释　5. 回归比较\n" +
+    "评分档位：0-4分=防守失守，5-6分=勉强守住，7-8分=稳定防守，9-10分=高质量反压。\n" +
+    "如果回答中出现口头禅或软弱措辞（如“可能”“或许”“看情况”“我承认”“我不知道”等），也请指出并给出更稳定的表达。\n\n";
+  const body = records.map((r,i)=>(
+    "===== 记录 " + (i+1) + " ・ " + r.module + " ・ " + r.date + " =====\n" +
+    (r.question ? "题目：" + r.question + "\n" : "") +
+    (r.coreLine ? "核心口径：" + r.coreLine + "\n" : "") +
+    "我的回答：\n" + (r.answer || "（无）") + "\n" +
+    (typeof r.score==="number" ? "自评分：" + r.score + " / 10\n" : "") +
+    (r.note ? "备注：" + r.note + "\n" : "")
+  )).join("\n");
+  return header + body;
+}
+function exportAiText(){
+  const text = buildAiExportText();
+  if(!text){ alert("还没有训练记录可以导出。"); return; }
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "山竹训练记录_AI评分用_" + new Date().toISOString().slice(0,10) + ".txt";
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -918,6 +950,7 @@ document.querySelectorAll("nav.tabs button").forEach(btn=>{
 })();
 
 /* ==================== 模块六：训练记录 ==================== */
+document.getElementById("m6ExportText").addEventListener("click", exportAiText);
 document.getElementById("m6Export").addEventListener("click", exportRecords);
 document.getElementById("m6Clear").addEventListener("click", clearRecords);
 renderRecords();
