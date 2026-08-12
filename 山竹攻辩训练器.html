@@ -309,10 +309,29 @@
   @media(min-width:640px){
     .timer-display{font-size:56px;}
   }
+  #print-area{display:none;}
+  @media print{
+    body{background:#fff !important;}
+    #app-root{display:none !important;}
+    #print-area{
+      display:block !important;
+      background:#fff;
+      color:#000;
+      padding:0;
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+    }
+    #print-area h1{font-size:20px;margin:0 0 4px;color:#000;}
+    #print-area h2{font-size:16px;margin:20px 0 8px;color:#000;border-bottom:1px solid #999;padding-bottom:4px;}
+    #print-area h3{font-size:13px;margin:12px 0 4px;color:#000;}
+    #print-area p{font-size:12px;margin:4px 0;color:#000;}
+    #print-area ul{font-size:12px;margin:4px 0;padding-left:20px;}
+    #print-area hr{border:none;border-top:1px solid #ccc;margin:10px 0;}
+  }
 </style>
 </head>
 <body>
 
+<div id="app-root">
 <header>
   <h1>山竹攻辩训练器</h1>
   <p>题库 · 计时 · 自评 · 记录（本地存储，不上传任何数据）</p>
@@ -556,13 +575,19 @@
       <h3>最近记录（最多显示20条）</h3>
       <div class="row">
         <button class="btn secondary" id="r-export">导出 JSON</button>
+        <button class="btn secondary" id="r-export-md">导出 Markdown</button>
+        <button class="btn gold" id="r-export-pdf">导出 PDF（打印）</button>
         <button class="btn danger" id="r-clear">清空全部记录</button>
       </div>
+      <p class="muted">Markdown 适合直接发给 AI 复盘；PDF 会打开浏览器打印窗口，选择"另存为 PDF"即可保存。</p>
       <div id="r-list"></div>
     </div>
   </section>
 
 </main>
+</div>
+
+<div id="print-area"></div>
 
 <script>
 (function(){
@@ -1434,20 +1459,24 @@ const MODULE_LABELS = {
   trap:"让步陷阱", criteria:"判准前置"
 };
 
-function renderRecords(){
-  const all = loadRecords().slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
-  $("r-total-count").textContent = all.length;
+const SUGGEST_MAP = {
+  short: "建议下一轮多练「短答训练」，重点在结论前置与压缩机制解释。",
+  crossex: "建议下一轮多练「连续质询防守」，重点在保持同一口径、不改口。",
+  compress: "建议下一轮多练「机制压缩训练」，把长论述压成一句话。",
+  safety: "建议下一轮多练「结辩安全训练」，避免自损措辞、回到判准。",
+  trap: "建议下一轮多练「二选一/让步陷阱训练」，先表态、拆二选一、让步加围栏。",
+  criteria: "建议下一轮多练「判准前置训练」，在45秒内先立标尺、再谈内容。"
+};
 
-  const recent7 = all.slice(0,7);
-  if(recent7.length){
-    const avg = recent7.reduce((sum,r)=> sum + (r.score / r.maxScore * 10), 0) / recent7.length;
-    $("r-avg7").textContent = avg.toFixed(1);
-  }else{
-    $("r-avg7").textContent = "-";
-  }
+function computeStats(all){
+  const sorted = all.slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
+  const recent7 = sorted.slice(0,7);
+  const avg7 = recent7.length
+    ? recent7.reduce((sum,r)=> sum + (r.score / r.maxScore * 10), 0) / recent7.length
+    : null;
 
   const byModule = {};
-  all.forEach(r=>{
+  sorted.forEach(r=>{
     if(!byModule[r.module]) byModule[r.module] = [];
     byModule[r.module].push(r.score / r.maxScore * 10);
   });
@@ -1457,28 +1486,28 @@ function renderRecords(){
     const avg = arr.reduce((a,b)=>a+b,0) / arr.length;
     if(avg < weakestAvg){ weakestAvg = avg; weakest = m; }
   });
-  $("r-weak").textContent = weakest ? MODULE_LABELS[weakest] : "-";
 
   const tally = JSON.parse(localStorage.getItem(TALLY_KEY) || "{}");
-  const sorted = Object.entries(tally).sort((a,b)=>b[1]-a[1]);
-  $("r-phrase").textContent = sorted.length ? sorted[0][0] : "-";
+  const sortedPhrases = Object.entries(tally).sort((a,b)=>b[1]-a[1]);
+  const topPhrase = sortedPhrases.length ? sortedPhrases[0][0] : null;
 
-  const suggestMap = {
-    short: "建议下一轮多练「短答训练」，重点在结论前置与压缩机制解释。",
-    crossex: "建议下一轮多练「连续质询防守」，重点在保持同一口径、不改口。",
-    compress: "建议下一轮多练「机制压缩训练」，把长论述压成一句话。",
-    safety: "建议下一轮多练「结辩安全训练」，避免自损措辞、回到判准。",
-    trap: "建议下一轮多练「二选一/让步陷阱训练」，先表态、拆二选一、让步加围栏。",
-    criteria: "建议下一轮多练「判准前置训练」，在45秒内先立标尺、再谈内容。"
-  };
-  $("r-suggest").textContent = weakest ? suggestMap[weakest] : "开始训练后这里会给出建议。";
+  return { sorted, count: sorted.length, avg7, weakest, topPhrase };
+}
+
+function renderRecords(){
+  const stats = computeStats(loadRecords());
+  $("r-total-count").textContent = stats.count;
+  $("r-avg7").textContent = stats.avg7 !== null ? stats.avg7.toFixed(1) : "-";
+  $("r-weak").textContent = stats.weakest ? MODULE_LABELS[stats.weakest] : "-";
+  $("r-phrase").textContent = stats.topPhrase || "-";
+  $("r-suggest").textContent = stats.weakest ? SUGGEST_MAP[stats.weakest] : "开始训练后这里会给出建议。";
 
   const list = $("r-list");
   list.innerHTML = "";
-  if(!all.length){
+  if(!stats.count){
     list.innerHTML = `<p class="muted">暂无记录，去前面几个模块练习后保存吧。</p>`;
   }
-  all.slice(0,20).forEach(r=>{
+  stats.sorted.slice(0,20).forEach(r=>{
     const div = document.createElement("div");
     div.className = "record-item";
     const snippet = r.text.length > 60 ? r.text.slice(0,60) + "……" : r.text;
@@ -1512,19 +1541,92 @@ $("r-clear").addEventListener("click", ()=>{
   }
 });
 
-$("r-export").addEventListener("click", ()=>{
-  const all = loadRecords();
-  const blob = new Blob([JSON.stringify(all, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+function exportFileName(ext){
   const d = new Date();
   const p = (n)=>String(n).padStart(2,"0");
+  return `山竹训练记录_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}.${ext}`;
+}
+function triggerDownload(content, mime, filename){
+  const blob = new Blob([content], {type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
   a.href = url;
-  a.download = `山竹训练记录_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}.json`;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+$("r-export").addEventListener("click", ()=>{
+  const all = loadRecords();
+  triggerDownload(JSON.stringify(all, null, 2), "application/json", exportFileName("json"));
+});
+
+function buildMarkdown(){
+  const stats = computeStats(loadRecords());
+  const lines = [];
+  lines.push("# 山竹攻辩训练记录");
+  lines.push("");
+  lines.push(`导出时间：${fmtDate(nowISO())}`);
+  lines.push("");
+  lines.push("## 训练概览");
+  lines.push("");
+  lines.push(`- 累计训练次数：${stats.count}`);
+  lines.push(`- 最近7次平均分：${stats.avg7 !== null ? stats.avg7.toFixed(1) : "-"} / 10`);
+  lines.push(`- 最弱模块：${stats.weakest ? MODULE_LABELS[stats.weakest] : "-"}`);
+  lines.push(`- 最常见口头禅：${stats.topPhrase || "-"}`);
+  lines.push("");
+  lines.push(`## 训练记录明细（按时间倒序，共 ${stats.count} 条）`);
+  lines.push("");
+  stats.sorted.forEach((r,i)=>{
+    lines.push(`### ${i+1}. ${fmtDate(r.date)} · ${r.moduleLabel} · ${r.score}/${r.maxScore}`);
+    lines.push("");
+    r.text.split("\n").forEach(l=> lines.push(l));
+    if(r.note){
+      lines.push("");
+      lines.push(`备注：${r.note}`);
+    }
+    lines.push("");
+  });
+  return lines.join("\n");
+}
+
+$("r-export-md").addEventListener("click", ()=>{
+  if(!loadRecords().length){ alert("暂无记录可导出"); return; }
+  triggerDownload(buildMarkdown(), "text/markdown", exportFileName("md"));
+});
+
+function escapeHTML(s){
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+}
+function buildPrintHTML(){
+  const stats = computeStats(loadRecords());
+  let html = `<h1>山竹攻辩训练记录</h1>`;
+  html += `<p>导出时间：${escapeHTML(fmtDate(nowISO()))}</p>`;
+  html += `<h2>训练概览</h2><ul>`;
+  html += `<li>累计训练次数：${stats.count}</li>`;
+  html += `<li>最近7次平均分：${stats.avg7 !== null ? stats.avg7.toFixed(1) : "-"} / 10</li>`;
+  html += `<li>最弱模块：${stats.weakest ? escapeHTML(MODULE_LABELS[stats.weakest]) : "-"}</li>`;
+  html += `<li>最常见口头禅：${stats.topPhrase ? escapeHTML(stats.topPhrase) : "-"}</li>`;
+  html += `</ul>`;
+  html += `<h2>训练记录明细（共 ${stats.count} 条）</h2>`;
+  stats.sorted.forEach((r,i)=>{
+    html += `<h3>${i+1}. ${escapeHTML(fmtDate(r.date))} · ${escapeHTML(r.moduleLabel)} · ${r.score}/${r.maxScore}</h3>`;
+    html += `<p>${escapeHTML(r.text).replace(/\n/g,"<br>")}</p>`;
+    if(r.note) html += `<p><em>备注：${escapeHTML(r.note)}</em></p>`;
+    html += `<hr>`;
+  });
+  return html;
+}
+
+$("r-export-pdf").addEventListener("click", ()=>{
+  if(!loadRecords().length){ alert("暂无记录可导出"); return; }
+  $("print-area").innerHTML = buildPrintHTML();
+  window.print();
 });
 
 renderRecords();
