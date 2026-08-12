@@ -323,7 +323,9 @@
   <button data-tab="crossex">② 质询防守</button>
   <button data-tab="compress">③ 压缩训练</button>
   <button data-tab="safety">④ 结辩安全</button>
-  <button data-tab="records">⑤ 训练记录</button>
+  <button data-tab="trap">⑤ 让步陷阱</button>
+  <button data-tab="criteria">⑥ 判准前置</button>
+  <button data-tab="records">⑦ 训练记录</button>
 </nav>
 
 <main>
@@ -470,7 +472,74 @@
     </div>
   </section>
 
-  <!-- 模块五：训练记录 -->
+  <!-- 模块五：二选一 / 让步陷阱训练 -->
+  <section class="module" id="mod-trap">
+    <div class="card">
+      <h2>二选一 / 让步陷阱训练</h2>
+      <p class="muted">对方抛"A还是B""所以你承认……吧"式陷阱题。15秒内练习：先给清晰表态，再拆穿二选一背后被混在一起的概念，最后给出第三种主张；如果确实要让步，必须明确加围栏。</p>
+      <div class="question-box" id="t-question">点击"下一题"开始</div>
+      <div class="timer-wrap">
+        <span class="phase-label" id="t-phase">未开始</span>
+        <span class="muted" id="t-qindex"></span>
+      </div>
+      <div class="timer-display" id="t-timer">15</div>
+      <div class="row">
+        <button class="btn" id="t-start">开始</button>
+        <button class="btn secondary" id="t-pause" disabled>暂停</button>
+        <button class="btn secondary" id="t-reset">重置</button>
+        <button class="btn gold" id="t-next">下一题</button>
+      </div>
+      <textarea id="t-answer" placeholder="固定句式参考：都不是，因为你把 X 和 Y 混在一起了，我的主张是 Z……"></textarea>
+      <div class="hint-tags" id="t-hints"></div>
+    </div>
+
+    <div class="card">
+      <h3>自评评分（每项 0-2 分）</h3>
+      <div id="t-score-rows"></div>
+      <div class="total-score">总分：<span id="t-total">0</span> / 8</div>
+      <input type="text" id="t-note" placeholder="备注（可选）">
+      <div class="row">
+        <button class="btn" id="t-save">保存本次记录</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模块六：判准前置训练 -->
+  <section class="module" id="mod-criteria">
+    <div class="card">
+      <h2>判准前置训练（45秒）</h2>
+      <p class="muted">给一道辩题，45秒内只写"今天比什么"和"为什么这个标准该决定胜负"，不写具体论证或案例。练的是先立标尺、再谈内容的习惯。</p>
+      <div class="question-box" id="j-topic">点击"下一题"开始</div>
+      <div class="timer-wrap">
+        <span class="phase-label" id="j-phase">未开始</span>
+        <span class="muted" id="j-qindex"></span>
+      </div>
+      <div class="timer-display" id="j-timer">45</div>
+      <div class="row">
+        <button class="btn" id="j-start">开始</button>
+        <button class="btn secondary" id="j-pause" disabled>暂停</button>
+        <button class="btn secondary" id="j-reset">重置</button>
+        <button class="btn gold" id="j-next">下一题</button>
+      </div>
+      <label class="muted">今天这道题，真正在比什么？</label>
+      <textarea id="j-what" placeholder="例如：今天不是比哪个制度听起来更包容，而是比……"></textarea>
+      <label class="muted">为什么这个标准应该决定胜负？</label>
+      <textarea id="j-why" placeholder="例如：因为评委最终要判断的是……"></textarea>
+      <div class="hint-tags" id="j-hints"></div>
+    </div>
+
+    <div class="card">
+      <h3>自评评分（每项 0-2 分）</h3>
+      <div id="j-score-rows"></div>
+      <div class="total-score">总分：<span id="j-total">0</span> / 6</div>
+      <input type="text" id="j-note" placeholder="备注（可选）">
+      <div class="row">
+        <button class="btn" id="j-save">保存本次记录</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模块七：训练记录 -->
   <section class="module" id="mod-records">
     <div class="card">
       <h2>训练概览</h2>
@@ -1047,10 +1116,322 @@ $("a-save").addEventListener("click", ()=>{
 });
 
 /* =========================================================
-   模块五：训练记录
+   模块五：二选一 / 让步陷阱训练
+   ========================================================= */
+const TRAP_QUESTIONS = [
+  "更多人有话语权，是不是当然比更少人有话语权更好？",
+  "所以你的意思是，效率比代表性更重要，对吗？",
+  "两党制稳定，还是多党制稳定，你只能选一个？",
+  "所以你承认，只要能上台，跟谁合作都无所谓？",
+  "你到底是说小党弱，还是说小党诉求能落实？",
+  "民主是看多数人满意，还是看少数人不被压制，你选哪个？",
+  "所以你承认对方说的历史趋势是事实？",
+  "两党制和多党制，你只能说哪个'更不烂'，对吗？",
+  "所以只要联合政府不倒台，你就得承认它稳定？",
+  "你是要专注结果正义，还是程序正义，选一个？"
+];
+const T_CRITERIA = [
+  "开头是否第一句话就给出清晰表态（都不是/是/不是……），而不是直接展开解释",
+  "是否拆穿二选一背后被混在一起的两个概念",
+  "是否给出第三种主张（我的主张是Z）",
+  "若有让步，是否明确加了围栏（只让A、不让B）；若无让步则视为满分"
+];
+const UNGATED_CONCESSION = ["可以啊","看情况","或许可以","应该可以","算是吧","差不多","有道理","也对"];
+const GATE_WORDS = /只|仅|但不代表|不代表|不等于|并不等于|并不代表/;
+const CLEAR_OPENERS = /^(都不是|不是|是|并不是|不对|对|没错|都是)/;
+
+let tState = { qIndex: -1, phase: "idle", remain: 15, timerId: null };
+
+function tRenderScoreRows(){
+  const wrap = $("t-score-rows");
+  wrap.innerHTML = "";
+  T_CRITERIA.forEach((label, i)=>{
+    const row = document.createElement("div");
+    row.className = "score-row";
+    row.innerHTML = `
+      <span class="label">${label}</span>
+      <div class="segmented">
+        <label><input type="radio" name="t-c${i}" value="0"><span>0</span></label>
+        <label><input type="radio" name="t-c${i}" value="1"><span>1</span></label>
+        <label><input type="radio" name="t-c${i}" value="2"><span>2</span></label>
+      </div>`;
+    wrap.appendChild(row);
+  });
+  wrap.querySelectorAll("input[type=radio]").forEach(inp=>{
+    inp.addEventListener("change", tUpdateTotal);
+  });
+}
+function tUpdateTotal(){
+  let total = 0;
+  T_CRITERIA.forEach((_, i)=>{
+    const checked = document.querySelector(`input[name="t-c${i}"]:checked`);
+    total += checked ? Number(checked.value) : 0;
+  });
+  $("t-total").textContent = total;
+  return total;
+}
+function tPickQuestion(){
+  let idx;
+  do{ idx = Math.floor(Math.random()*TRAP_QUESTIONS.length); }
+  while(idx === tState.qIndex && TRAP_QUESTIONS.length>1);
+  tState.qIndex = idx;
+  $("t-question").textContent = TRAP_QUESTIONS[idx];
+  $("t-qindex").textContent = `第 ${idx+1} 题 / 共 ${TRAP_QUESTIONS.length} 题`;
+  $("t-answer").value = "";
+  $("t-hints").innerHTML = "";
+  tReset();
+}
+function tSetPhase(phase){
+  tState.phase = phase;
+  const el = $("t-phase");
+  el.className = "phase-label " + phase;
+  el.textContent = {idle:"未开始", answering:"回答中", done:"已结束"}[phase];
+}
+function tTick(){
+  tState.remain -= 1;
+  $("t-timer").textContent = tState.remain;
+  if(tState.remain <= 0){
+    beep(440,0.3);
+    tSetPhase("done");
+    clearInterval(tState.timerId);
+    tState.timerId = null;
+    $("t-start").disabled = false;
+    $("t-pause").disabled = true;
+  }
+}
+$("t-start").addEventListener("click", ()=>{
+  if(tState.qIndex === -1){ tPickQuestion(); }
+  if(tState.phase === "idle" || tState.phase === "done"){
+    tState.phase = "answering";
+    tState.remain = 15;
+  }
+  tSetPhase(tState.phase);
+  $("t-timer").textContent = tState.remain;
+  $("t-start").disabled = true;
+  $("t-pause").disabled = false;
+  $("t-pause").textContent = "暂停";
+  clearInterval(tState.timerId);
+  tState.timerId = setInterval(tTick, 1000);
+});
+$("t-pause").addEventListener("click", ()=>{
+  if(tState.timerId){
+    clearInterval(tState.timerId);
+    tState.timerId = null;
+    $("t-pause").textContent = "继续";
+  }else{
+    tState.timerId = setInterval(tTick, 1000);
+    $("t-pause").textContent = "暂停";
+  }
+});
+function tReset(){
+  clearInterval(tState.timerId);
+  tState.timerId = null;
+  tState.phase = "idle";
+  tState.remain = 15;
+  tSetPhase("idle");
+  $("t-timer").textContent = 15;
+  $("t-start").disabled = false;
+  $("t-pause").disabled = true;
+  $("t-pause").textContent = "暂停";
+}
+$("t-reset").addEventListener("click", tReset);
+$("t-next").addEventListener("click", tPickQuestion);
+
+$("t-answer").addEventListener("input", ()=>{
+  const text = $("t-answer").value;
+  const trimmed = text.trim();
+  const tags = [];
+  if(trimmed && !CLEAR_OPENERS.test(trimmed)){
+    tags.push("提示：建议开头先给清晰表态（都不是/是/不是……）");
+  }
+  UNGATED_CONCESSION.forEach(p=>{
+    if(text.includes(p) && !GATE_WORDS.test(text)){
+      tags.push("未加围栏的让步：" + p);
+    }
+  });
+  findCatchphrases(text).forEach(p=> tags.push("软词：" + p));
+  $("t-hints").innerHTML = tags.map(t=>`<span class="tag">${t}</span>`).join("");
+});
+
+$("t-save").addEventListener("click", ()=>{
+  if(tState.qIndex === -1){ alert("请先点击「下一题」抽取问题"); return; }
+  const total = tUpdateTotal();
+  const answer = $("t-answer").value.trim();
+  tallyCatchphrases(answer);
+  addRecord({
+    id: uid(),
+    date: nowISO(),
+    module: "trap",
+    moduleLabel: "让步陷阱",
+    score: total,
+    maxScore: 8,
+    text: `问：${TRAP_QUESTIONS[tState.qIndex]}\n答：${answer}`,
+    note: $("t-note").value.trim()
+  });
+  alert("已保存本次记录");
+});
+
+tRenderScoreRows();
+
+/* =========================================================
+   模块六：判准前置训练
+   ========================================================= */
+const CRITERIA_TOPICS = [
+  "希盟与巫统继续合作是否为明智之举？",
+  "多党制比两党制更适合现代民主。",
+  "网络实名制利大于弊。",
+  "死刑应该被废除。",
+  "政府应该优先发展经济，而非优先发展环保。",
+  "义务教育应该延长至高中。",
+  "社交媒体平台应该为用户发布的内容负责。",
+  "大学教育应该完全免费。",
+  "人工智能的发展利大于弊。",
+  "城市应该优先发展公共交通，而非私家车。"
+];
+const J_CRITERIA = [
+  "是否在45秒内完成（未超时）",
+  "是否清楚说出'比什么'，而不是复述事实或案例",
+  "是否说明了'为什么这个标准应该决定胜负'"
+];
+const CONTENT_WORDS = ["证据","案例","数据","历史上","比如","例如","研究显示"];
+
+let jState = { qIndex: -1, phase: "idle", remain: 45, timerId: null, timedOut: false };
+
+function jRenderScoreRows(){
+  const wrap = $("j-score-rows");
+  wrap.innerHTML = "";
+  J_CRITERIA.forEach((label, i)=>{
+    const row = document.createElement("div");
+    row.className = "score-row";
+    row.innerHTML = `
+      <span class="label">${label}</span>
+      <div class="segmented">
+        <label><input type="radio" name="j-c${i}" value="0"><span>0</span></label>
+        <label><input type="radio" name="j-c${i}" value="1"><span>1</span></label>
+        <label><input type="radio" name="j-c${i}" value="2"><span>2</span></label>
+      </div>`;
+    wrap.appendChild(row);
+  });
+  wrap.querySelectorAll("input[type=radio]").forEach(inp=>{
+    inp.addEventListener("change", jUpdateTotal);
+  });
+}
+function jUpdateTotal(){
+  let total = 0;
+  J_CRITERIA.forEach((_, i)=>{
+    const checked = document.querySelector(`input[name="j-c${i}"]:checked`);
+    total += checked ? Number(checked.value) : 0;
+  });
+  $("j-total").textContent = total;
+  return total;
+}
+function jPickTopic(){
+  let idx;
+  do{ idx = Math.floor(Math.random()*CRITERIA_TOPICS.length); }
+  while(idx === jState.qIndex && CRITERIA_TOPICS.length>1);
+  jState.qIndex = idx;
+  jState.timedOut = false;
+  $("j-topic").textContent = CRITERIA_TOPICS[idx];
+  $("j-what").value = "";
+  $("j-why").value = "";
+  $("j-hints").innerHTML = "";
+  jReset();
+}
+function jSetPhase(phase){
+  jState.phase = phase;
+  const el = $("j-phase");
+  el.className = "phase-label " + phase;
+  el.textContent = {idle:"未开始", answering:"编写中", done:"已结束"}[phase];
+}
+function jTick(){
+  jState.remain -= 1;
+  $("j-timer").textContent = jState.remain;
+  if(jState.remain <= 0){
+    beep(440,0.3);
+    jState.timedOut = true;
+    jSetPhase("done");
+    clearInterval(jState.timerId);
+    jState.timerId = null;
+    $("j-start").disabled = false;
+    $("j-pause").disabled = true;
+    $("j-hints").innerHTML = `<span class="tag">⏱ 已超时</span>`;
+  }
+}
+$("j-start").addEventListener("click", ()=>{
+  if(jState.qIndex === -1){ jPickTopic(); }
+  if(jState.phase === "idle" || jState.phase === "done"){
+    jState.phase = "answering";
+    jState.remain = 45;
+    jState.timedOut = false;
+    $("j-hints").innerHTML = "";
+  }
+  jSetPhase(jState.phase);
+  $("j-timer").textContent = jState.remain;
+  $("j-start").disabled = true;
+  $("j-pause").disabled = false;
+  $("j-pause").textContent = "暂停";
+  clearInterval(jState.timerId);
+  jState.timerId = setInterval(jTick, 1000);
+});
+$("j-pause").addEventListener("click", ()=>{
+  if(jState.timerId){
+    clearInterval(jState.timerId);
+    jState.timerId = null;
+    $("j-pause").textContent = "继续";
+  }else{
+    jState.timerId = setInterval(jTick, 1000);
+    $("j-pause").textContent = "暂停";
+  }
+});
+function jReset(){
+  clearInterval(jState.timerId);
+  jState.timerId = null;
+  jState.phase = "idle";
+  jState.remain = 45;
+  jSetPhase("idle");
+  $("j-timer").textContent = 45;
+  $("j-start").disabled = false;
+  $("j-pause").disabled = true;
+  $("j-pause").textContent = "暂停";
+}
+$("j-reset").addEventListener("click", jReset);
+$("j-next").addEventListener("click", jPickTopic);
+
+function jCheckContent(){
+  const text = $("j-what").value + " " + $("j-why").value;
+  const tags = jState.timedOut ? ["⏱ 已超时"] : [];
+  CONTENT_WORDS.forEach(w=>{
+    if(text.includes(w)) tags.push("提示：可能写进了具体论证/案例内容，判准阶段只写标准（" + w + "）");
+  });
+  $("j-hints").innerHTML = tags.map(t=>`<span class="tag">${t}</span>`).join("");
+}
+$("j-what").addEventListener("input", jCheckContent);
+$("j-why").addEventListener("input", jCheckContent);
+
+$("j-save").addEventListener("click", ()=>{
+  if(jState.qIndex === -1){ alert("请先点击「下一题」抽取辩题"); return; }
+  const total = jUpdateTotal();
+  addRecord({
+    id: uid(),
+    date: nowISO(),
+    module: "criteria",
+    moduleLabel: "判准前置",
+    score: total,
+    maxScore: 6,
+    text: `题目：${CRITERIA_TOPICS[jState.qIndex]}\n比什么：${$("j-what").value.trim()}\n为什么：${$("j-why").value.trim()}`,
+    note: $("j-note").value.trim()
+  });
+  alert("已保存本次记录");
+});
+
+jRenderScoreRows();
+
+/* =========================================================
+   模块七：训练记录
    ========================================================= */
 const MODULE_LABELS = {
-  short:"短答训练", crossex:"质询防守", compress:"压缩训练", safety:"结辩安全"
+  short:"短答训练", crossex:"质询防守", compress:"压缩训练", safety:"结辩安全",
+  trap:"让步陷阱", criteria:"判准前置"
 };
 
 function renderRecords(){
@@ -1086,7 +1467,9 @@ function renderRecords(){
     short: "建议下一轮多练「短答训练」，重点在结论前置与压缩机制解释。",
     crossex: "建议下一轮多练「连续质询防守」，重点在保持同一口径、不改口。",
     compress: "建议下一轮多练「机制压缩训练」，把长论述压成一句话。",
-    safety: "建议下一轮多练「结辩安全训练」，避免自损措辞、回到判准。"
+    safety: "建议下一轮多练「结辩安全训练」，避免自损措辞、回到判准。",
+    trap: "建议下一轮多练「二选一/让步陷阱训练」，先表态、拆二选一、让步加围栏。",
+    criteria: "建议下一轮多练「判准前置训练」，在45秒内先立标尺、再谈内容。"
   };
   $("r-suggest").textContent = weakest ? suggestMap[weakest] : "开始训练后这里会给出建议。";
 
