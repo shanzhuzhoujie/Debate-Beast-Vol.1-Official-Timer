@@ -6,17 +6,17 @@
 <title>山竹语言与答辩防守训练器</title>
 <style>
 :root{
-  --bg:#0b1220;
-  --panel:#141b2d;
-  --panel2:#1b2436;
-  --border:#26314a;
-  --text:#e6e9f0;
-  --muted:#8b93a7;
-  --accent:#2dd4bf;
-  --accent2:#f2b807;
-  --danger:#f87171;
-  --good:#4ade80;
-  --warn:#fbbf24;
+  --bg:#150a0c;
+  --panel:#201013;
+  --panel2:#2a161a;
+  --border:#47232b;
+  --text:#f4ece3;
+  --muted:#b39b93;
+  --accent:#8c1d38;
+  --accent2:#d4af37;
+  --danger:#c0293f;
+  --good:#efe6d8;
+  --warn:#cf9a3d;
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.6;}
@@ -26,7 +26,7 @@ header h1{font-size:1.25rem;margin:0 0 4px;color:var(--accent2);letter-spacing:.
 header p{margin:0;color:var(--muted);font-size:.8rem;}
 nav.tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 18px;position:sticky;top:0;background:var(--bg);padding:10px 0 8px;z-index:10;border-bottom:1px solid var(--border);}
 nav.tabs button{flex:1 1 auto;min-width:78px;background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:9px 6px;border-radius:8px;font-size:.76rem;cursor:pointer;transition:.15s;}
-nav.tabs button.active{background:var(--accent);color:#08211c;border-color:var(--accent);font-weight:600;}
+nav.tabs button.active{background:var(--accent);color:#fdf3e7;border-color:var(--accent);font-weight:600;}
 .panel{display:none;}
 .panel.active{display:block;animation:fadein .2s ease;}
 @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
@@ -37,8 +37,8 @@ nav.tabs button.active{background:var(--accent);color:#08211c;border-color:var(-
 button{font-family:inherit;}
 .btn{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px 14px;border-radius:8px;font-size:.85rem;cursor:pointer;min-height:40px;}
 .btn:hover{border-color:var(--accent);}
-.btn.primary{background:var(--accent);color:#08211c;border-color:var(--accent);font-weight:600;}
-.btn.gold{background:var(--accent2);color:#221900;border-color:var(--accent2);font-weight:600;}
+.btn.primary{background:var(--accent);color:#fdf3e7;border-color:var(--accent);font-weight:600;}
+.btn.gold{background:var(--accent2);color:#2a1108;border-color:var(--accent2);font-weight:600;}
 .btn.danger{background:transparent;color:var(--danger);border-color:var(--danger);}
 .btn:disabled{opacity:.4;cursor:not-allowed;}
 .btn-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
@@ -59,14 +59,14 @@ label.field-label{display:block;font-size:.78rem;color:var(--muted);margin:10px 
 .score-label{font-size:.85rem;}
 .score-buttons{display:flex;gap:6px;}
 .score-btn{width:34px;height:34px;border-radius:6px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);cursor:pointer;}
-.score-btn.active{background:var(--accent);color:#08211c;border-color:var(--accent);font-weight:700;}
+.score-btn.active{background:var(--accent);color:#fdf3e7;border-color:var(--accent);font-weight:700;}
 .score-total-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px;}
 .score-total-num{font-size:1.6rem;font-weight:700;color:var(--accent2);}
 .grade-badge{padding:4px 10px;border-radius:20px;font-size:.78rem;font-weight:600;}
-.grade-0{background:rgba(248,113,113,.15);color:var(--danger);}
-.grade-1{background:rgba(251,191,36,.15);color:var(--warn);}
-.grade-2{background:rgba(45,212,191,.15);color:var(--accent);}
-.grade-3{background:rgba(74,222,128,.15);color:var(--good);}
+.grade-0{background:rgba(192,41,63,.18);color:var(--danger);}
+.grade-1{background:rgba(207,154,61,.18);color:var(--warn);}
+.grade-2{background:rgba(212,175,55,.18);color:var(--accent2);}
+.grade-3{background:rgba(239,230,216,.18);color:var(--good);}
 .record-card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:.82rem;}
 .record-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;}
 .record-top .meta{color:var(--muted);font-size:.75rem;}
